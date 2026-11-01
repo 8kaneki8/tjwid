@@ -220,6 +220,17 @@ function setTheme(dark) {
   try { localStorage.setItem("tajweed-theme", dark ? "dark" : "light"); } catch {}
 }
 try { setTheme(localStorage.getItem("tajweed-theme") === "dark"); } catch { setTheme(false); }
+
+const COLOR_THEMES = new Set(["green", "blue", "red", "yellow"]);
+function setColorTheme(theme) {
+  const selected = COLOR_THEMES.has(theme) ? theme : "green";
+  document.body.dataset.colorTheme = selected;
+  $("colorThemeSelect").value = selected;
+  try { localStorage.setItem("tajweed-color-theme", selected); } catch {}
+}
+try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "green"); }
+catch { setColorTheme("green"); }
+$("colorThemeSelect").addEventListener("change", event => setColorTheme(event.target.value));
 $("themeToggle").addEventListener("click", () => setTheme(!document.body.classList.contains("dark")));
 $("tajweedToggle").addEventListener("change", async event => {
   state.tajweedEnabled = event.target.checked;
