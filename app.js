@@ -14,7 +14,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set() };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", audioAyah: null, audioSurah: null };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -163,7 +163,15 @@ function renderAyahs(surah) {
   text.className = "ayah-text";
   for (const ayah of surah.ayahs) {
     const span = document.createElement("span");
-    span.className = "ayah";
+    span.className = "ayah" + (state.audioAyah === ayah.number && state.audioSurah === surah.id ? " audio-current" : "");
+    span.dataset.ayah = String(ayah.number);
+    span.setAttribute("role", "button");
+    span.setAttribute("tabindex", "0");
+    span.setAttribute("aria-label", "استمع إلى الآية " + ayah.number);
+    span.addEventListener("click", () => playAyah(ayah.number));
+    span.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); playAyah(ayah.number); }
+    });
     const markup = state.script === "uthmani" && state.tajweedEnabled ? state.tajweedBySurah.get(surah.id)?.get(ayah.number) : null;
     const colored = markup ? tajweedFragment(markup, ayah.text) : null;
     if (colored) span.append(colored); else span.append(document.createTextNode(ayah.text));
@@ -191,6 +199,7 @@ function selectSurah(id) {
     showUnavailable("نص سورة " + surah.name + " غير متاح حاليًا؛ لم يتم إدراج نص بديل.");
     return;
   }
+  if (state.selected !== surah.id) stopRecitation();
   state.selected = surah.id;
   $("surahSelect").value = String(surah.id);
   $("currentLocation").textContent = surah.name;
@@ -255,13 +264,13 @@ try { setTheme(localStorage.getItem("tajweed-theme") === "dark"); } catch { setT
 
 const COLOR_THEMES = new Set(["green", "blue", "red", "yellow"]);
 function setColorTheme(theme) {
-  const selected = COLOR_THEMES.has(theme) ? theme : "green";
+  const selected = COLOR_THEMES.has(theme) ? theme : "blue";
   document.body.dataset.colorTheme = selected;
   $("colorThemeSelect").value = selected;
   try { localStorage.setItem("tajweed-color-theme", selected); } catch {}
 }
-try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "green"); }
-catch { setColorTheme("green"); }
+try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "blue"); }
+catch { setColorTheme("blue"); }
 $("colorThemeSelect").addEventListener("change", event => setColorTheme(event.target.value));
 $("themeToggle").addEventListener("click", () => setTheme(!document.body.classList.contains("dark")));
 $("tajweedToggle").addEventListener("change", async event => {
@@ -283,4 +292,51 @@ $("bookmarkState").addEventListener("click", () => {
 });
 $("prevSurah").addEventListener("click", () => state.selected > 1 && selectSurah(state.selected - 1));
 $("nextSurah").addEventListener("click", () => state.selected < 114 && selectSurah(state.selected + 1));
+function audioFileUrl(surahId, ayahNumber) {
+  const pad = value => String(value).padStart(3, "0");
+  return "https://everyayah.com/data/" + state.reciter + "/" + pad(surahId) + pad(ayahNumber) + ".mp3";
+}
+function updateAudioStatus(message) { $("audioAyahStatus").textContent = message; }
+function stopRecitation() {
+  const audio = $("recitationAudio"); audio.pause(); audio.removeAttribute("src"); audio.load();
+  state.audioAyah = null; state.audioSurah = null;
+  $("playSelectedAyah").textContent = "تشغيل الآية";
+  document.querySelectorAll(".ayah.audio-current").forEach(node => node.classList.remove("audio-current"));
+}
+async function playAyah(number) {
+  const surah = state.surahs.find(item => item.id === state.selected);
+  if (!surah || !surah.ayahs.some(item => item.number === Number(number))) return;
+  const audio = $("recitationAudio");
+  state.audioAyah = Number(number); state.audioSurah = surah.id;
+  renderAyahs(surah);
+  const active = document.querySelector('.ayah[data-ayah="' + number + '"]');
+  if (active) active.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  $("playSelectedAyah").textContent = "إعادة تشغيل الآية";
+  updateAudioStatus("الآن: سورة " + surah.name + " · الآية " + number);
+  audio.pause(); audio.src = audioFileUrl(surah.id, Number(number)); audio.load();
+  try { await audio.play(); } catch { updateAudioStatus("تعذر بدء الصوت تلقائيًا. اضغط زر التشغيل داخل مشغل الصوت."); }
+}
+function moveAudioAyah(direction) {
+  const surah = state.surahs.find(item => item.id === state.selected); if (!surah) return;
+  const current = state.audioSurah === surah.id && state.audioAyah ? state.audioAyah : 1;
+  const next = current + direction; if (next < 1 || next > surah.verses) return;
+  playAyah(next);
+}
+$("reciterSelect").addEventListener("change", event => {
+  state.reciter = event.target.value;
+  if (state.audioAyah && state.audioSurah === state.selected) playAyah(state.audioAyah);
+  else updateAudioStatus("تم اختيار القارئ. اختر آية لبدء الاستماع.");
+});
+$("playSelectedAyah").addEventListener("click", () => playAyah(state.audioAyah || 1));
+$("prevAyahAudio").addEventListener("click", () => moveAudioAyah(-1));
+$("nextAyahAudio").addEventListener("click", () => moveAudioAyah(1));
+$("recitationAudio").addEventListener("ended", () => {
+  const surah = state.surahs.find(item => item.id === state.audioSurah);
+  if (surah && state.audioAyah < surah.verses) playAyah(state.audioAyah + 1);
+  else updateAudioStatus("انتهت تلاوة سورة " + (surah ? surah.name : "") + ".");
+});
+$("recitationAudio").addEventListener("play", () => { $("playSelectedAyah").textContent = "إعادة تشغيل الآية"; });
+$("recitationAudio").addEventListener("pause", () => {
+  if (!$("recitationAudio").ended && state.audioAyah) $("playSelectedAyah").textContent = "متابعة الآية";
+});
 loadQuran();
