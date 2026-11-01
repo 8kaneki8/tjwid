@@ -375,3 +375,27 @@ body.dark .surah-panel,body.dark .tajweed-tools{background:color-mix(in srgb,var
 @media(max-width:900px){.reader-layout{grid-template-columns:minmax(190px,230px) minmax(0,1fr)}.mushaf-panel{min-height:680px;padding:34px 28px}.reading-content{min-height:520px}.ayah-text{font-size:clamp(24px,3vw,31px);line-height:2.65}}
 @media(max-width:680px){.reader-layout{grid-template-columns:1fr}.mushaf-panel{min-height:560px;padding:31px 23px}.mushaf-panel:before{inset:11px}.mushaf-top{flex-wrap:wrap;justify-content:space-between;gap:8px}.mushaf-edition{margin-inline-start:0}.reading-content{min-height:420px;padding:24px 2px 30px}.surah-heading{padding-inline:30px;margin-bottom:19px}.ayah-text{font-size:25px;line-height:2.5;padding-inline:2px}.surah-panel{order:2;max-height:300px}.mushaf-panel{order:1}}
 @media(prefers-reduced-motion:reduce){.surah-item,.reader-footer .secondary-button{transition:none}}
+
+/* Blue default identity and synchronized recitation player. */
+.recitation-panel{margin:22px 0 25px;padding:20px 22px;border:1px solid var(--accent-border);border-radius:14px;background:var(--surface);box-shadow:0 10px 28px rgba(30,75,130,.07)}
+.recitation-heading,.recitation-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.recitation-heading{justify-content:space-between;margin-bottom:12px}
+.recitation-heading h3{margin:2px 0 0;color:var(--accent-strong);font-size:20px}
+.recitation-heading .eyebrow{margin:0}
+.reciter-select{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}
+.reciter-select select{min-height:40px;max-width:240px;padding:7px 12px;border:1px solid var(--accent-border);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit}
+.recitation-controls{margin-bottom:12px}
+.audio-action{min-height:38px;padding:8px 14px;border:1px solid var(--accent-border);border-radius:9px;background:var(--accent-soft);color:var(--accent-strong);font:inherit;font-size:13px;cursor:pointer}
+.audio-action.primary-audio{background:var(--accent);border-color:var(--accent);color:white}
+.audio-action:hover{filter:brightness(.97)}
+.audio-status{flex:1;min-width:180px;color:var(--muted);font-size:12px}
+.recitation-panel audio{display:block;width:100%;height:42px}
+.audio-note{margin:9px 0 0;color:var(--muted);font-size:11px}
+.ayah{cursor:pointer;border-radius:7px;transition:background .18s ease,box-shadow .18s ease}
+.ayah:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ayah.audio-current{background:color-mix(in srgb,var(--accent) 17%,transparent);box-shadow:inset 0 -2px 0 var(--accent);border-radius:8px}
+.ayah:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+body.dark .recitation-panel{background:var(--surface);border-color:var(--accent-border);box-shadow:0 10px 28px #0003}
+body.dark .reciter-select select{background:var(--surface);color:var(--ink)}
+@media(max-width:680px){.recitation-panel{padding:16px}.recitation-heading{align-items:flex-start}.reciter-select{width:100%;justify-content:space-between}.reciter-select select{flex:1;max-width:none}.audio-status{flex-basis:100%}}
+@media(prefers-reduced-motion:reduce){.ayah{transition:none}}

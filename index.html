@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#18764b">
+  <meta name="theme-color" content="#205fa8">
   <meta name="description" content="تجويد — تجربة هادئة لقراءة القرآن الكريم برواية حفص عن عاصم.">
   <title>تجويد | القرآن الكريم</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
     <nav class="top-nav" aria-label="التنقل الرئيسي"><a class="active" href="#reader">المصحف</a><a href="#about">عن الموقع</a></nav>
-    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue">أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
+    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue" selected>أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
   </header>
 
   <main>
@@ -37,6 +37,12 @@
         <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
       </div>
       <div class="tajweed-tools"><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
+      <section class="recitation-panel" aria-label="مشغل التلاوة">
+        <div class="recitation-heading"><div><p class="eyebrow">استمع وتابع الآية</p><h3>التلاوة الصوتية</h3></div><label class="reciter-select"><span>القارئ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option></select></label></div>
+        <div class="recitation-controls"><button id="prevAyahAudio" class="audio-action" type="button">السابق</button><button id="playSelectedAyah" class="audio-action primary-audio" type="button">تشغيل الآية</button><button id="nextAyahAudio" class="audio-action" type="button">التالي</button><span id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</span></div>
+        <audio id="recitationAudio" controls preload="none"></audio>
+        <p class="audio-note">اضغط على أي آية في المصحف للاستماع إليها. ينتقل التحديد تلقائيًا مع كل آية. الصوتيات مستضافة عبر <a href="https://everyayah.com/" target="_blank" rel="noopener noreferrer">EveryAyah</a>.</p>
+      </section>
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>فهرس السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" aria-live="polite">
