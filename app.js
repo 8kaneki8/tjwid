@@ -188,6 +188,7 @@ function selectSurah(id) {
   $("nextSurah").disabled = surah.id === 114;
   renderSurahs();
   renderAyahs(surah);
+  if (state.tajweedEnabled) loadTajweed(surah);
 }
 
 async function loadQuran() {
