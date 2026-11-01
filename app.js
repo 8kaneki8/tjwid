@@ -14,7 +14,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "" };
+const state = { surahs: [], selected: null, query: "", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set() };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -93,6 +93,60 @@ function renderSurahs() {
   }
 }
 
+function tajweedFragment(markup, expectedText) {
+  const template = document.createElement("template");
+  template.innerHTML = markup;
+  template.content.querySelectorAll(".end").forEach(node => node.remove());
+  if (template.content.textContent !== expectedText) return null;
+  const fragment = document.createDocumentFragment();
+  const allowed = new Set(["ham_wasl","laam_shamsiyah","silent","madda_normal","madda_permissible","madda_necessary","madda_obligatory","madda_6","ghunnah","idgham_ghunnah","idgham_no_ghunnah","idgham_shafawi","ikhafa","ikhafa_shafawi","iqlab","qalqalah","qalaqah"]);
+  const copyNode = (node, parent) => {
+    if (node.nodeType === Node.TEXT_NODE) { parent.append(document.createTextNode(node.nodeValue)); return; }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.tagName.toLowerCase() === "tajweed") {
+      const rule = [...node.classList].find(name => allowed.has(name));
+      if (rule) {
+        const span = document.createElement("span");
+        span.className = "tajweed-word " + rule;
+        for (const child of node.childNodes) copyNode(child, span);
+        parent.append(span);
+        return;
+      }
+    }
+    for (const child of node.childNodes) copyNode(child, parent);
+  };
+  for (const node of template.content.childNodes) copyNode(node, fragment);
+  return fragment;
+}
+
+async function loadTajweed(surah) {
+  if (state.tajweedBySurah.has(surah.id) || state.tajweedLoading.has(surah.id)) return;
+  state.tajweedLoading.add(surah.id);
+  $("tajweedStatus").textContent = "جارٍ تحميل ألوان التجويد والتحقق من مطابقة النص…";
+  try {
+    const response = await fetch("https://api.quran.com/api/v4/quran/verses/uthmani_tajweed?chapter_number=" + surah.id);
+    if (!response.ok) throw new Error("خدمة ألوان التجويد غير متاحة الآن.");
+    const payload = await response.json();
+    if (!Array.isArray(payload.verses) || payload.verses.length !== surah.verses) throw new Error("لم تكتمل بيانات التجويد لهذه السورة.");
+    const annotated = new Map();
+    for (const verse of payload.verses) {
+      const parts = String(verse.verse_key || "").split(":").map(Number);
+      if (parts[0] !== surah.id || !Number.isInteger(parts[1]) || !verse.text_uthmani_tajweed) continue;
+      const localAyah = surah.ayahs.find(item => item.number === parts[1]);
+      if (localAyah && tajweedFragment(verse.text_uthmani_tajweed, localAyah.text)) annotated.set(parts[1], verse.text_uthmani_tajweed);
+    }
+    state.tajweedBySurah.set(surah.id, annotated);
+    $("tajweedStatus").textContent = annotated.size === surah.verses
+      ? "تم تحميل ألوان التجويد ومطابقة جميع آيات السورة مع النص العثماني."
+      : "تم تلوين " + annotated.size + " من " + surah.verses + " آية بعد المطابقة الحرفية؛ تُركت الآيات غير المتطابقة دون تلوين حفاظًا على النص.";
+  } catch (error) {
+    $("tajweedStatus").textContent = error.message || "تعذر تحميل ألوان التجويد. يمكنك متابعة القراءة بالنص العثماني المعتاد.";
+  } finally {
+    state.tajweedLoading.delete(surah.id);
+    if (state.selected === surah.id) renderAyahs(surah);
+  }
+}
+
 function renderAyahs(surah) {
   const root = $("readingContent");
   root.replaceChildren();
@@ -109,7 +163,10 @@ function renderAyahs(surah) {
   for (const ayah of surah.ayahs) {
     const span = document.createElement("span");
     span.className = "ayah";
-    span.textContent = ayah.text + " ";
+    const markup = state.tajweedEnabled ? state.tajweedBySurah.get(surah.id)?.get(ayah.number) : null;
+    const colored = markup ? tajweedFragment(markup, ayah.text) : null;
+    if (colored) span.append(colored); else span.append(document.createTextNode(ayah.text));
+    span.append(document.createTextNode(" "));
     const marker = document.createElement("span");
     marker.className = "ayah-marker";
     marker.setAttribute("aria-label", "الآية " + ayah.number);
@@ -131,6 +188,7 @@ function selectSurah(id) {
   $("nextSurah").disabled = surah.id === 114;
   renderSurahs();
   renderAyahs(surah);
+  if (state.tajweedEnabled) loadTajweed(surah);
 }
 
 async function loadQuran() {
@@ -141,8 +199,9 @@ async function loadQuran() {
     state.surahs = parseCorpus(raw);
     renderSurahs();
     $("readerStatus").textContent = "تم التحقق من 114 سورة و6236 آية";
-    const saved = Number(localStorage.getItem("tajweed-bookmark"));
-    selectSurah(Number.isInteger(saved) && saved >= 1 && saved <= 114 ? saved : 1);
+    let saved = 1;
+    try { const stored = Number(localStorage.getItem("tajweed-bookmark")); if (Number.isInteger(stored) && stored >= 1 && stored <= 114) saved = stored; } catch {}
+    selectSurah(saved);
   } catch (error) {
     renderSurahs();
     showUnavailable(error.message || "تعذر تحميل ملف المصحف.");
@@ -154,7 +213,24 @@ $("searchInput").addEventListener("input", event => {
   renderSurahs();
 });
 $("surahSelect").addEventListener("change", event => selectSurah(event.target.value));
-$("themeToggle").addEventListener("click", () => document.body.classList.toggle("dark"));
+function setTheme(dark) {
+  document.body.classList.toggle("dark", dark);
+  $("themeToggle").textContent = dark ? "☀" : "◐";
+  $("themeToggle").setAttribute("aria-label", dark ? "تفعيل الثيم الفاتح" : "تفعيل الثيم الأسود");
+  try { localStorage.setItem("tajweed-theme", dark ? "dark" : "light"); } catch {}
+}
+try { setTheme(localStorage.getItem("tajweed-theme") === "dark"); } catch { setTheme(false); }
+$("themeToggle").addEventListener("click", () => setTheme(!document.body.classList.contains("dark")));
+$("tajweedToggle").addEventListener("change", async event => {
+  state.tajweedEnabled = event.target.checked;
+  $("tajweedLegend").hidden = !state.tajweedEnabled;
+  if (!state.tajweedEnabled) {
+    $("tajweedStatus").textContent = "تم إيقاف ألوان التجويد؛ النص العثماني الأصلي معروض كما هو.";
+    if (state.selected) renderAyahs(state.surahs[state.selected - 1]);
+    return;
+  }
+  if (state.selected) await loadTajweed(state.surahs[state.selected - 1]);
+});
 $("bookmarkState").addEventListener("click", () => {
   if (!state.selected) return;
   try {
