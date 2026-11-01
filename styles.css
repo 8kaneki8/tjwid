@@ -126,3 +126,186 @@ body.dark .riwaya{background:color-mix(in srgb,var(--accent) 18%,#101a29);border
 body.dark .about-section{background:color-mix(in srgb,var(--accent) 16%,#101a29);border-color:color-mix(in srgb,var(--accent) 30%,#26364a)}
 body.dark .reader-footer .secondary-button{background:color-mix(in srgb,var(--accent) 20%,#101a29);color:color-mix(in srgb,var(--accent) 60%,white)}
 @media(max-width:760px){.appearance-controls{gap:6px}.color-theme-control select{min-width:78px;height:38px;padding:0 7px;font-size:11px}}
+
+
+/* Refined printed-Mushaf page treatment */
+:root{
+  --paper:#fffdf7;
+  --paper-ink:#26352d;
+  --paper-rule:color-mix(in srgb,var(--accent) 48%,#c9b987);
+  --paper-shadow:rgba(63,54,34,.12);
+}
+.mushaf-panel{
+  isolation:isolate;
+  background:var(--paper);
+  color:var(--paper-ink);
+  border:1px solid var(--paper-rule);
+  border-radius:3px;
+  box-shadow:0 18px 46px var(--paper-shadow),inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 25%,#e6d9b9);
+  padding:clamp(26px,4vw,48px) clamp(22px,5vw,68px);
+}
+.mushaf-panel:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:13px;
+  border:1px solid color-mix(in srgb,var(--accent) 32%,#e7dcc3);
+  pointer-events:none;
+}
+.mushaf-panel:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:19px;
+  border:1px solid color-mix(in srgb,var(--accent) 12%,#e7dcc3);
+  pointer-events:none;
+}
+.mushaf-top{
+  min-height:35px;
+  align-items:center;
+  gap:12px;
+  color:color-mix(in srgb,var(--accent-strong) 68%,#716b5d);
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+  font-size:11px;
+}
+.page-label{font-weight:700;color:var(--accent-strong)}
+.mushaf-edition{
+  margin-inline-start:auto;
+  padding:4px 11px;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,#e7dcc3);
+  border-radius:30px;
+  color:var(--accent-strong);
+  background:color-mix(in srgb,var(--accent) 5%,var(--paper));
+  white-space:nowrap;
+}
+.bookmark{
+  border:0;
+  padding:5px 0;
+  background:transparent;
+  color:var(--accent-strong);
+  font:inherit;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.bookmark:hover{text-decoration:underline;text-underline-offset:4px}
+.bookmark:focus-visible,.secondary-button:focus-visible,.surah-item:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+.reading-content{
+  min-height:470px;
+  padding:20px 4px 32px;
+}
+.surah-heading{
+  margin:0 auto 23px;
+  max-width:620px;
+  padding:17px 42px 14px;
+  border-top:1px solid var(--paper-rule);
+  border-bottom:1px solid var(--paper-rule);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 7%,var(--paper)),transparent);
+}
+.surah-heading:before,.surah-heading:after{
+  color:var(--accent);
+  font-size:19px;
+}
+.surah-heading h3{
+  color:var(--accent-strong);
+  font-size:clamp(27px,3vw,34px);
+  line-height:1.8;
+}
+.surah-heading p{
+  color:color-mix(in srgb,var(--accent-strong) 65%,#8c8575);
+}
+.ayah-text{
+  color:var(--paper-ink);
+  font-size:clamp(25px,2.7vw,35px);
+  line-height:2.7;
+  text-align:justify;
+  text-align-last:center;
+  padding:5px 7px 22px;
+  word-spacing:1px;
+}
+.ayah-marker{
+  color:var(--accent-strong);
+  font-size:.68em;
+  padding:0 6px;
+}
+.reader-footer{
+  min-height:48px;
+  align-items:center;
+  border-top:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+}
+.reader-footer .secondary-button{
+  border:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+  background:color-mix(in srgb,var(--accent) 8%,var(--paper));
+  color:var(--accent-strong);
+  transition:background .18s ease,transform .18s ease;
+}
+.reader-footer .secondary-button:not(:disabled):hover{
+  background:color-mix(in srgb,var(--accent) 15%,var(--paper));
+  transform:translateY(-1px);
+}
+.reader-footer span{color:#827a69}
+.tajweed-tools{
+  border-color:var(--accent-border);
+  background:var(--surface);
+}
+.surah-panel{
+  border-radius:8px;
+  border-color:var(--accent-border);
+}
+.surah-item{border-color:color-mix(in srgb,var(--accent) 10%,transparent)}
+.surah-item.selected .surah-number{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:white;
+}
+body.dark{
+  --paper:#111b18;
+  --paper-ink:#e9e4d7;
+  --paper-rule:color-mix(in srgb,var(--accent) 45%,#665c43);
+  --paper-shadow:rgba(0,0,0,.34);
+}
+body.dark .mushaf-panel{
+  background:var(--paper);
+  color:var(--paper-ink);
+  border-color:var(--paper-rule);
+  box-shadow:0 18px 46px var(--paper-shadow),inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 28%,#403c31);
+}
+body.dark .mushaf-panel:before{border-color:color-mix(in srgb,var(--accent) 32%,#554d3b)}
+body.dark .mushaf-panel:after{border-color:color-mix(in srgb,var(--accent) 16%,#554d3b)}
+body.dark .mushaf-top,body.dark .reader-footer{border-color:color-mix(in srgb,var(--accent) 25%,#403c31)}
+body.dark .mushaf-edition{
+  color:color-mix(in srgb,var(--accent) 65%,#fff);
+  border-color:color-mix(in srgb,var(--accent) 34%,#403c31);
+  background:color-mix(in srgb,var(--accent) 10%,var(--paper));
+}
+body.dark .bookmark,body.dark .page-label{color:color-mix(in srgb,var(--accent) 68%,#fff)}
+body.dark .surah-heading{
+  border-color:var(--paper-rule);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 12%,var(--paper)),transparent);
+}
+body.dark .surah-heading h3,body.dark .ayah-marker{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+body.dark .surah-heading p,body.dark .reader-footer span{color:#b6ad99}
+body.dark .ayah-text{color:var(--paper-ink)}
+body.dark .reader-footer .secondary-button{
+  color:color-mix(in srgb,var(--accent) 70%,#fff);
+  border-color:color-mix(in srgb,var(--accent) 30%,#403c31);
+  background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+}
+@media(max-width:760px){
+  .mushaf-panel{padding:25px 22px;min-height:550px}
+  .mushaf-panel:before{inset:10px}
+  .mushaf-panel:after{inset:15px}
+  .mushaf-top{flex-wrap:wrap;justify-content:space-between;gap:7px}
+  .mushaf-edition{margin-inline-start:0}
+  .bookmark{font-size:10px}
+  .reading-content{min-height:420px;padding:17px 0 25px}
+  .surah-heading{padding-inline:29px}
+  .surah-heading:before{right:6px}
+  .surah-heading:after{left:6px}
+  .ayah-text{font-size:25px;line-height:2.55;padding-inline:2px}
+}
+@media(prefers-reduced-motion:reduce){
+  .reader-footer .secondary-button{transition:none}
+}
