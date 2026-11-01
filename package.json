@@ -1,0 +1,9 @@
+{
+  "name": "tajweed-quran",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:quran": "node scripts/validate-quran.mjs"
+  }
+}
