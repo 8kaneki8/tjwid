@@ -194,7 +194,9 @@ function selectSurah(id) {
   state.selected = surah.id;
   $("surahSelect").value = String(surah.id);
   $("currentLocation").textContent = surah.name;
-  $("readerStatus").textContent = "تم التحقق من " + surah.verses + " آية";
+  $("readerStatus").textContent = state.script === "simple"
+    ? "الرسم المبسط · " + surah.verses + " آية (فحص بنيوي)"
+    : "تم التحقق من " + surah.verses + " آية";
   $("prevSurah").disabled = surah.id === 1;
   $("nextSurah").disabled = surah.id === 114;
   renderSurahs();
@@ -239,7 +241,7 @@ $("scriptSelect").addEventListener("change", async event => {
   $("tajweedToggle").disabled = nextScript === "simple";
   $("tajweedLegend").hidden = true;
   $("tajweedStatus").textContent = nextScript === "simple"
-    ? "ألوان التجويد متاحة مع الرسم العثماني فقط."
+    ? "الرسم المبسط لا يدعم ألوان التجويد في هذه النسخة."
     : "يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.";
   await loadQuran(previousSurah);
 });
