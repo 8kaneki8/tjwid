@@ -72,13 +72,13 @@ function renderSurahs() {
     !q || s.name.includes(q) || s.ayahs.some(a => a.text.includes(q))
   );
   $("surahCount").textContent = state.surahs.length ? state.surahs.length + " سورة" : "—";
-  if (!filtered.length) {
-    const empty = document.createElement("p"); empty.className = "muted";
-    empty.textContent = "لا توجد نتائج مطابقة."; list.append(empty); return;
-  }
   for (const s of state.surahs) {
     const option = document.createElement("option");
     option.value = s.id; option.textContent = s.name; select.append(option);
+  }
+  if (!filtered.length) {
+    const empty = document.createElement("p"); empty.className = "muted";
+    empty.textContent = "لا توجد نتائج مطابقة."; list.append(empty); return;
   }
   for (const s of filtered) {
     const button = document.createElement("button");
@@ -180,6 +180,16 @@ function renderAyahs(surah) {
 function selectSurah(id) {
   const surah = state.surahs.find(s => s.id === Number(id));
   if (!surah) return;
+  if (!surah.ayahs.length) {
+    state.selected = surah.id;
+    $("surahSelect").value = String(surah.id);
+    $("currentLocation").textContent = surah.name;
+    $("prevSurah").disabled = surah.id === 1;
+    $("nextSurah").disabled = surah.id === 114;
+    renderSurahs();
+    showUnavailable("نص سورة " + surah.name + " غير متاح حاليًا؛ لم يتم إدراج نص بديل.");
+    return;
+  }
   state.selected = surah.id;
   $("surahSelect").value = String(surah.id);
   $("currentLocation").textContent = surah.name;
@@ -203,6 +213,9 @@ async function loadQuran() {
     try { const stored = Number(localStorage.getItem("tajweed-bookmark")); if (Number.isInteger(stored) && stored >= 1 && stored <= 114) saved = stored; } catch {}
     selectSurah(saved);
   } catch (error) {
+    state.surahs = SURAH_NAMES.map((name, index) => ({
+      id: index + 1, name, verses: EXPECTED_AYAHS[index], ayahs: []
+    }));
     renderSurahs();
     showUnavailable(error.message || "تعذر تحميل ملف المصحف.");
   }
