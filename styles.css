@@ -73,3 +73,305 @@ body.dark .surah-number{border-color:#385171}
 body.dark .ornament,body.dark .ornament:before,body.dark .ornament:after{border-color:#507fb4}
 body.dark footer{border-color:#263b55}
 @media(max-width:760px){.reader-layout{grid-template-columns:1fr}.mushaf-panel{min-height:560px;padding:25px 22px}.mushaf-panel:before{inset:11px}.reading-content{min-height:420px}.ayah-text{font-size:25px;line-height:2.5;padding:5px 3px}.mushaf-edition{display:none}.tajweed-tools{align-items:flex-start;flex-direction:column}}
+
+
+/* Unified selectable accent themes: green is the default. */
+:root{
+  --accent:#18764b;--accent-strong:#12613d;--accent-soft:#e8f4ed;
+  --accent-border:#c9e2d2;--accent-glow:rgba(24,118,75,.16);
+}
+body[data-color-theme="blue"]{
+  --accent:#205fa8;--accent-strong:#174b8a;--accent-soft:#eaf3fd;
+  --accent-border:#c9dcef;--accent-glow:rgba(32,95,168,.16);
+}
+body[data-color-theme="red"]{
+  --accent:#b8323b;--accent-strong:#922630;--accent-soft:#fbecee;
+  --accent-border:#efcbd0;--accent-glow:rgba(184,50,59,.16);
+}
+body[data-color-theme="yellow"]{
+  --accent:#a87512;--accent-strong:#80570b;--accent-soft:#fff5d9;
+  --accent-border:#ead9a9;--accent-glow:rgba(168,117,18,.17);
+}
+.appearance-controls{display:flex;align-items:center;gap:9px}
+.color-theme-control select{
+  min-width:92px;height:40px;padding:0 11px;border:1px solid var(--line);
+  border-radius:9px;background:var(--surface);color:var(--ink);
+  font:inherit;font-size:12px;cursor:pointer
+}
+.brand-mark,.primary-link,.moon{background:var(--accent)!important}
+.primary-link{box-shadow:0 9px 22px var(--accent-glow)}
+.hero h1 span,.top-nav a.active,.icon-button,.art-caption,.surah-number,
+.secondary-button,.surah-heading h3,.tajweed-switch{color:var(--accent-strong)}
+.ornament,.ornament:before,.ornament:after{border-color:color-mix(in srgb,var(--accent) 48%,white)}
+.riwaya{border-color:var(--accent-border);color:var(--accent-strong);background:var(--accent-soft)}
+.surah-item:hover,.surah-item.selected{background:var(--accent-soft)}
+.surah-number{border-color:var(--accent-border)}
+.mushaf-panel{border-color:var(--accent-border)}
+.mushaf-panel:before{border-color:color-mix(in srgb,var(--accent) 20%,white)}
+.surah-heading{border-color:var(--accent-border);background:linear-gradient(90deg,transparent,var(--accent-soft),transparent)}
+.surah-heading:before,.surah-heading:after{color:var(--accent)}
+.ayah-marker{color:var(--accent-strong)}
+.secondary-button{background:var(--accent-soft)}
+.about-section{background:var(--accent-soft);border-color:var(--accent-border)}
+.about-icon,.eyebrow{color:var(--accent)}
+.about-section a{color:var(--accent-strong)}
+.tajweed-switch input:checked+.switch-track{background:var(--accent)}
+.tajweed-switch input:focus-visible+.switch-track{outline-color:var(--accent-border)}
+body.dark .color-theme-control select{background:var(--surface);color:var(--ink);border-color:var(--line)}
+body.dark .mushaf-panel{border-color:color-mix(in srgb,var(--accent) 55%,#26364a)}
+body.dark .mushaf-panel:before{border-color:color-mix(in srgb,var(--accent) 32%,#26364a)}
+body.dark .surah-heading{border-color:color-mix(in srgb,var(--accent) 40%,#26364a);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 15%,#101a29),transparent)}
+body.dark .surah-heading h3,body.dark .tajweed-switch,body.dark .art-caption{color:color-mix(in srgb,var(--accent) 55%,white)}
+body.dark .riwaya{background:color-mix(in srgb,var(--accent) 18%,#101a29);border-color:color-mix(in srgb,var(--accent) 35%,#26364a);color:color-mix(in srgb,var(--accent) 55%,white)}
+body.dark .about-section{background:color-mix(in srgb,var(--accent) 16%,#101a29);border-color:color-mix(in srgb,var(--accent) 30%,#26364a)}
+body.dark .reader-footer .secondary-button{background:color-mix(in srgb,var(--accent) 20%,#101a29);color:color-mix(in srgb,var(--accent) 60%,white)}
+@media(max-width:760px){.appearance-controls{gap:6px}.color-theme-control select{min-width:78px;height:38px;padding:0 7px;font-size:11px}}
+
+
+/* Refined printed-Mushaf page treatment */
+:root{
+  --paper:#fffdf7;
+  --paper-ink:#26352d;
+  --paper-rule:color-mix(in srgb,var(--accent) 48%,#c9b987);
+  --paper-shadow:rgba(63,54,34,.12);
+}
+.mushaf-panel{
+  isolation:isolate;
+  background:var(--paper);
+  color:var(--paper-ink);
+  border:1px solid var(--paper-rule);
+  border-radius:3px;
+  box-shadow:0 18px 46px var(--paper-shadow),inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 25%,#e6d9b9);
+  padding:clamp(26px,4vw,48px) clamp(22px,5vw,68px);
+}
+.mushaf-panel:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:13px;
+  border:1px solid color-mix(in srgb,var(--accent) 32%,#e7dcc3);
+  pointer-events:none;
+}
+.mushaf-panel:after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:19px;
+  border:1px solid color-mix(in srgb,var(--accent) 12%,#e7dcc3);
+  pointer-events:none;
+}
+.mushaf-top{
+  min-height:35px;
+  align-items:center;
+  gap:12px;
+  color:color-mix(in srgb,var(--accent-strong) 68%,#716b5d);
+  border-bottom:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+  font-size:11px;
+}
+.page-label{font-weight:700;color:var(--accent-strong)}
+.mushaf-edition{
+  margin-inline-start:auto;
+  padding:4px 11px;
+  border:1px solid color-mix(in srgb,var(--accent) 25%,#e7dcc3);
+  border-radius:30px;
+  color:var(--accent-strong);
+  background:color-mix(in srgb,var(--accent) 5%,var(--paper));
+  white-space:nowrap;
+}
+.bookmark{
+  border:0;
+  padding:5px 0;
+  background:transparent;
+  color:var(--accent-strong);
+  font:inherit;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.bookmark:hover{text-decoration:underline;text-underline-offset:4px}
+.bookmark:focus-visible,.secondary-button:focus-visible,.surah-item:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+}
+.reading-content{
+  min-height:470px;
+  padding:20px 4px 32px;
+}
+.surah-heading{
+  margin:0 auto 23px;
+  max-width:620px;
+  padding:17px 42px 14px;
+  border-top:1px solid var(--paper-rule);
+  border-bottom:1px solid var(--paper-rule);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 7%,var(--paper)),transparent);
+}
+.surah-heading:before,.surah-heading:after{
+  color:var(--accent);
+  font-size:19px;
+}
+.surah-heading h3{
+  color:var(--accent-strong);
+  font-size:clamp(27px,3vw,34px);
+  line-height:1.8;
+}
+.surah-heading p{
+  color:color-mix(in srgb,var(--accent-strong) 65%,#8c8575);
+}
+.ayah-text{
+  color:var(--paper-ink);
+  font-size:clamp(25px,2.7vw,35px);
+  line-height:2.7;
+  text-align:justify;
+  text-align-last:center;
+  padding:5px 7px 22px;
+  word-spacing:1px;
+}
+.ayah-marker{
+  color:var(--accent-strong);
+  font-size:.68em;
+  padding:0 6px;
+}
+.reader-footer{
+  min-height:48px;
+  align-items:center;
+  border-top:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+}
+.reader-footer .secondary-button{
+  border:1px solid color-mix(in srgb,var(--accent) 22%,#e7dcc3);
+  background:color-mix(in srgb,var(--accent) 8%,var(--paper));
+  color:var(--accent-strong);
+  transition:background .18s ease,transform .18s ease;
+}
+.reader-footer .secondary-button:not(:disabled):hover{
+  background:color-mix(in srgb,var(--accent) 15%,var(--paper));
+  transform:translateY(-1px);
+}
+.reader-footer span{color:#827a69}
+.tajweed-tools{
+  border-color:var(--accent-border);
+  background:var(--surface);
+}
+.surah-panel{
+  border-radius:8px;
+  border-color:var(--accent-border);
+}
+.surah-item{border-color:color-mix(in srgb,var(--accent) 10%,transparent)}
+.surah-item.selected .surah-number{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:white;
+}
+body.dark{
+  --paper:#111b18;
+  --paper-ink:#e9e4d7;
+  --paper-rule:color-mix(in srgb,var(--accent) 45%,#665c43);
+  --paper-shadow:rgba(0,0,0,.34);
+}
+body.dark .mushaf-panel{
+  background:var(--paper);
+  color:var(--paper-ink);
+  border-color:var(--paper-rule);
+  box-shadow:0 18px 46px var(--paper-shadow),inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 28%,#403c31);
+}
+body.dark .mushaf-panel:before{border-color:color-mix(in srgb,var(--accent) 32%,#554d3b)}
+body.dark .mushaf-panel:after{border-color:color-mix(in srgb,var(--accent) 16%,#554d3b)}
+body.dark .mushaf-top,body.dark .reader-footer{border-color:color-mix(in srgb,var(--accent) 25%,#403c31)}
+body.dark .mushaf-edition{
+  color:color-mix(in srgb,var(--accent) 65%,#fff);
+  border-color:color-mix(in srgb,var(--accent) 34%,#403c31);
+  background:color-mix(in srgb,var(--accent) 10%,var(--paper));
+}
+body.dark .bookmark,body.dark .page-label{color:color-mix(in srgb,var(--accent) 68%,#fff)}
+body.dark .surah-heading{
+  border-color:var(--paper-rule);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 12%,var(--paper)),transparent);
+}
+body.dark .surah-heading h3,body.dark .ayah-marker{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+body.dark .surah-heading p,body.dark .reader-footer span{color:#b6ad99}
+body.dark .ayah-text{color:var(--paper-ink)}
+body.dark .reader-footer .secondary-button{
+  color:color-mix(in srgb,var(--accent) 70%,#fff);
+  border-color:color-mix(in srgb,var(--accent) 30%,#403c31);
+  background:color-mix(in srgb,var(--accent) 12%,var(--paper));
+}
+@media(max-width:760px){
+  .mushaf-panel{padding:25px 22px;min-height:550px}
+  .mushaf-panel:before{inset:10px}
+  .mushaf-panel:after{inset:15px}
+  .mushaf-top{flex-wrap:wrap;justify-content:space-between;gap:7px}
+  .mushaf-edition{margin-inline-start:0}
+  .bookmark{font-size:10px}
+  .reading-content{min-height:420px;padding:17px 0 25px}
+  .surah-heading{padding-inline:29px}
+  .surah-heading:before{right:6px}
+  .surah-heading:after{left:6px}
+  .ayah-text{font-size:25px;line-height:2.55;padding-inline:2px}
+}
+@media(prefers-reduced-motion:reduce){
+  .reader-footer .secondary-button{transition:none}
+}
+
+/* Safe empty-state presentation: no substitute Quran text is generated. */
+.loading-state{
+  position:relative;width:min(100%,520px);margin:28px auto;padding:34px 24px;
+  border-block:1px solid color-mix(in srgb,var(--accent) 28%,#e7dcc3);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 5%,var(--paper)),transparent);
+}
+.loading-state:before,.loading-state:after{
+  content:"۞";position:absolute;top:50%;transform:translateY(-50%);
+  color:color-mix(in srgb,var(--accent) 65%,#c4ad78);font-family:"Amiri Quran",serif;font-size:20px;
+}
+.loading-state:before{right:4px}.loading-state:after{left:4px}
+.loading-state .loading-symbol{color:var(--accent);font-size:42px}
+.loading-state h3{color:var(--accent-strong);line-height:1.8}
+.loading-state p{line-height:2;color:var(--paper-ink)}
+.loading-state small{color:#8b806a}
+body.dark .loading-state{border-color:var(--paper-rule);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 8%,var(--paper)),transparent)}
+body.dark .loading-state p{color:var(--paper-ink)}
+body.dark .loading-state small{color:#b6ad99}
+
+
+/* Mushaf page polish: balanced book proportions and full theme adaptation. */
+:root{--reader-wash:#f2f7f3;--hero-wash:#eaf4ee;--paper:#fffdf7;--paper-ink:#29352d}
+body[data-color-theme="blue"]{--reader-wash:#f1f6fc;--hero-wash:#e8f1fc;--paper:#fffefd;--paper-ink:#273446}
+body[data-color-theme="red"]{--reader-wash:#fcf3f3;--hero-wash:#f9e9eb;--paper:#fffdfd;--paper-ink:#3b292c}
+body[data-color-theme="yellow"]{--reader-wash:#faf7ed;--hero-wash:#f5efd9;--paper:#fffdf4;--paper-ink:#393326}
+body{background:var(--reader-wash)}
+.hero{background:radial-gradient(ellipse at 76% 38%,var(--hero-wash),transparent 48%),linear-gradient(115deg,var(--reader-wash),var(--hero-wash))}
+.reader-section{background:linear-gradient(180deg,var(--reader-wash),color-mix(in srgb,var(--reader-wash) 72%,white))}
+.reader-layout{grid-template-columns:minmax(230px,265px) minmax(0,1fr);gap:clamp(16px,2.2vw,26px);align-items:stretch}
+.mushaf-panel{position:relative;min-height:760px;padding:clamp(34px,4.2vw,58px) clamp(28px,5.4vw,76px);background:var(--paper);color:var(--paper-ink);border:1px solid color-mix(in srgb,var(--accent) 42%,#c8b98f);border-radius:4px;box-shadow:0 22px 55px rgba(44,39,26,.12),inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 26%,#e5d8b8)}
+.mushaf-panel:before{content:"";position:absolute;z-index:0;inset:14px;border:1px solid color-mix(in srgb,var(--accent) 30%,#d8c9a7);pointer-events:none}
+.mushaf-panel:after{content:"۞";position:absolute;z-index:0;top:8px;left:50%;transform:translateX(-50%);padding:0 13px;color:color-mix(in srgb,var(--accent) 65%,#b89d65);background:var(--paper);font-family:"Amiri Quran",serif;font-size:19px;line-height:1}
+.mushaf-top,.reading-content,.reader-footer{position:relative;z-index:1}
+.mushaf-top{min-height:42px;align-items:center;gap:12px;padding:0 4px 15px;border-bottom:1px solid color-mix(in srgb,var(--accent) 25%,#dfd3b9);color:color-mix(in srgb,var(--accent-strong) 65%,#766d5c)}
+.page-label{font-weight:700}
+.mushaf-edition{margin-inline-start:auto;border:1px solid color-mix(in srgb,var(--accent) 24%,#dfd3b9);border-radius:30px;padding:5px 12px;color:var(--accent-strong);background:color-mix(in srgb,var(--accent) 5%,var(--paper))}
+.reading-content{min-height:590px;padding:clamp(25px,3.5vw,42px) clamp(2px,1vw,12px) 38px}
+.surah-heading{max-width:660px;margin:0 auto 28px;padding:18px 46px 15px;border-block:1px solid color-mix(in srgb,var(--accent) 45%,#cdbb8e);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 7%,var(--paper)),transparent)}
+.surah-heading h3{color:var(--accent-strong);font-size:clamp(29px,3.1vw,36px);line-height:1.9}
+.surah-heading:before,.surah-heading:after{color:var(--accent);font-size:20px}
+.ayah-text{max-width:900px;margin-inline:auto;color:var(--paper-ink);font-size:clamp(26px,2.75vw,36px);line-height:2.85;word-spacing:1px;text-align:justify;text-align-last:center;padding:5px 10px 25px}
+.ayah-marker{color:var(--accent-strong);font-size:.67em;white-space:nowrap;padding-inline:5px}
+.reader-footer{min-height:52px;padding:14px 4px 0;border-top:1px solid color-mix(in srgb,var(--accent) 24%,#dfd3b9)}
+.reader-footer .secondary-button{border:1px solid color-mix(in srgb,var(--accent) 24%,#dfd3b9);background:color-mix(in srgb,var(--accent) 8%,var(--paper));color:var(--accent-strong)}
+.surah-panel,.tajweed-tools{border-color:var(--accent-border)}
+.surah-panel{align-self:start;background:color-mix(in srgb,var(--surface) 92%,var(--accent-soft))}
+.surah-item.selected{box-shadow:inset -3px 0 0 var(--accent)}
+body.dark{--reader-wash:#0d1713;--hero-wash:#17291f;--paper:#111b18;--paper-ink:#e9e4d7}
+body.dark[data-color-theme="blue"]{--reader-wash:#0d1521;--hero-wash:#14243a;--paper:#111b29;--paper-ink:#e7edf7}
+body.dark[data-color-theme="red"]{--reader-wash:#1d1114;--hero-wash:#2a171c;--paper:#211518;--paper-ink:#f0e5e5}
+body.dark[data-color-theme="yellow"]{--reader-wash:#1b180e;--hero-wash:#2a2414;--paper:#211d12;--paper-ink:#f0ead8}
+body.dark .reader-section{background:linear-gradient(180deg,var(--reader-wash),color-mix(in srgb,var(--reader-wash) 78%,black))}
+body.dark .mushaf-panel{background:var(--paper);color:var(--paper-ink);border-color:color-mix(in srgb,var(--accent) 54%,#62583e);box-shadow:0 22px 55px #0006,inset 0 0 0 5px var(--paper),inset 0 0 0 6px color-mix(in srgb,var(--accent) 30%,#403a2c)}
+body.dark .mushaf-panel:before{border-color:color-mix(in srgb,var(--accent) 34%,#5b5039)}
+body.dark .mushaf-panel:after{background:var(--paper)}
+body.dark .mushaf-top,body.dark .reader-footer{border-color:color-mix(in srgb,var(--accent) 28%,#4c4534)}
+body.dark .mushaf-edition{color:color-mix(in srgb,var(--accent) 72%,white);border-color:color-mix(in srgb,var(--accent) 36%,#4c4534);background:color-mix(in srgb,var(--accent) 10%,var(--paper))}
+body.dark .surah-heading{border-color:color-mix(in srgb,var(--accent) 45%,#514833);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 13%,var(--paper)),transparent)}
+body.dark .surah-heading h3,body.dark .ayah-marker{color:color-mix(in srgb,var(--accent) 72%,white)}
+body.dark .ayah-text{color:var(--paper-ink)}
+body.dark .reader-footer .secondary-button{color:color-mix(in srgb,var(--accent) 72%,white);border-color:color-mix(in srgb,var(--accent) 34%,#4c4534);background:color-mix(in srgb,var(--accent) 12%,var(--paper))}
+body.dark .surah-panel,body.dark .tajweed-tools{background:color-mix(in srgb,var(--surface) 92%,var(--accent) 8%)}
+@media(max-width:900px){.reader-layout{grid-template-columns:minmax(190px,230px) minmax(0,1fr)}.mushaf-panel{min-height:680px;padding:34px 28px}.reading-content{min-height:520px}.ayah-text{font-size:clamp(24px,3vw,31px);line-height:2.65}}
+@media(max-width:680px){.reader-layout{grid-template-columns:1fr}.mushaf-panel{min-height:560px;padding:31px 23px}.mushaf-panel:before{inset:11px}.mushaf-top{flex-wrap:wrap;justify-content:space-between;gap:8px}.mushaf-edition{margin-inline-start:0}.reading-content{min-height:420px;padding:24px 2px 30px}.surah-heading{padding-inline:30px;margin-bottom:19px}.ayah-text{font-size:25px;line-height:2.5;padding-inline:2px}.surah-panel{order:2;max-height:300px}.mushaf-panel{order:1}}
+@media(prefers-reduced-motion:reduce){.surah-item,.reader-footer .secondary-button{transition:none}}

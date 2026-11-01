@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#174b8a">
+  <meta name="theme-color" content="#18764b">
   <meta name="description" content="تجويد — تجربة هادئة لقراءة القرآن الكريم برواية حفص عن عاصم.">
   <title>تجويد | القرآن الكريم</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
     <nav class="top-nav" aria-label="التنقل الرئيسي"><a class="active" href="#reader">المصحف</a><a href="#about">عن الموقع</a></nav>
-    <button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button>
+    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue">أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
   </header>
 
   <main>
@@ -39,7 +39,7 @@
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>فهرس السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><span class="bookmark" id="bookmarkState">♡ حفظ موضع القراءة</span></div>
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
           </div>
