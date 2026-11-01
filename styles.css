@@ -309,3 +309,22 @@ body.dark .reader-footer .secondary-button{
 @media(prefers-reduced-motion:reduce){
   .reader-footer .secondary-button{transition:none}
 }
+
+/* Safe empty-state presentation: no substitute Quran text is generated. */
+.loading-state{
+  position:relative;width:min(100%,520px);margin:28px auto;padding:34px 24px;
+  border-block:1px solid color-mix(in srgb,var(--accent) 28%,#e7dcc3);
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 5%,var(--paper)),transparent);
+}
+.loading-state:before,.loading-state:after{
+  content:"۞";position:absolute;top:50%;transform:translateY(-50%);
+  color:color-mix(in srgb,var(--accent) 65%,#c4ad78);font-family:"Amiri Quran",serif;font-size:20px;
+}
+.loading-state:before{right:4px}.loading-state:after{left:4px}
+.loading-state .loading-symbol{color:var(--accent);font-size:42px}
+.loading-state h3{color:var(--accent-strong);line-height:1.8}
+.loading-state p{line-height:2;color:var(--paper-ink)}
+.loading-state small{color:#8b806a}
+body.dark .loading-state{border-color:var(--paper-rule);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--accent) 8%,var(--paper)),transparent)}
+body.dark .loading-state p{color:var(--paper-ink)}
+body.dark .loading-state small{color:#b6ad99}
