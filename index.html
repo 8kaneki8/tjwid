@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#18764b">
+  <meta name="description" content="تجويد — تجربة هادئة لقراءة القرآن الكريم برواية حفص عن عاصم.">
+  <title>تجويد | القرآن الكريم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
+    <nav class="top-nav" aria-label="التنقل الرئيسي"><a class="active" href="#reader">المصحف</a><a href="#about">عن الموقع</a></nav>
+    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue">أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+        <h1>افتح قلبك<br><span>لآيات القرآن</span></h1>
+        <p class="hero-text">مساحة هادئة تعينك على القراءة والتدبر، آيةً بعد آية.</p>
+        <a class="primary-link" href="#reader">ابدأ القراءة <span aria-hidden="true">←</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="ornament ornament-one"></div><div class="ornament ornament-two"></div><div class="moon">☾</div><div class="art-caption">نُورٌ عَلَى نُورٍ</div></div>
+    </section>
+
+    <section class="reader-section" id="reader">
+      <div class="section-heading"><div><p class="eyebrow">المصحف الشريف</p><h2>وردك اليوم</h2></div><span class="riwaya">رواية حفص عن عاصم</span></div>
+      <div class="reader-tools">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث في السور أو الآيات…" autocomplete="off"></label>
+        <label class="select-wrap"><span class="sr-only">اختر السورة</span><select id="surahSelect"><option value="">اختر السورة</option></select></label>
+        <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
+      </div>
+      <div class="tajweed-tools"><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
+      <div class="reader-layout">
+        <aside class="surah-panel"><div class="panel-title"><h3>فهرس السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
+        <article class="mushaf-panel" aria-live="polite">
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
+          <div id="readingContent" class="reading-content">
+            <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
+          </div>
+          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>السابق</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>التالي</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-section" id="about"><div class="about-icon">۞</div><div><p class="eyebrow">أمانة النص</p><h2>القرآن يُنقل كما أُنزل</h2><p>نعتمد نصًا موثقًا برواية حفص عن عاصم، ونحافظ عليه دون إعادة صياغة أو تعديل. لن تُفعّل القراءة الكاملة حتى تجتاز بيانات النص اختبارات التحقق.</p><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني: مشروع تنزيل ↗</a></div></section>
+  </main>
+  <footer><span>تجويد</span><span>اللهم اجعل القرآن ربيع قلوبنا</span><span>رواية حفص عن عاصم</span></footer>
+  <script src="app.js" defer></script>
+</body>
+</html>
