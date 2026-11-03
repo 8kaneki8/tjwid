@@ -13,7 +13,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceSurah: null, practiceWords: [], practiceRecorder: null, practiceIndex: 0, fontSize: 33, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceSurah: null, practiceWords: [], practiceRecorder: null, practiceIndex: 0, fontSize: 33, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0, surahRequestId: 0 };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -314,22 +314,26 @@ async function loadMushafPage(page) {
 async function selectSurah(id) {
   const surah = state.surahs.find(item => item.id === Number(id));
   if (!surah) return;
+  const requestId = ++state.surahRequestId;
   stopPractice();
   if (state.selected !== surah.id) stopRecitation();
   state.selected = surah.id;
+  state.pageVerses = [];
+  state.pageAyahKeys = [];
   $("surahSelect").value = String(surah.id);
   $("currentLocation").textContent = surah.name;
   $("readerStatus").textContent = "جارٍ فتح سورة " + surah.name + "…";
   $("readingContent").innerHTML = '<div class="loading-state"><div class="loading-symbol">۞</div><h3>سورة ' + surah.name + '</h3><p>جارٍ تحميل النص والتحقق من ترتيب الآيات…</p></div>';
   try {
     await ensureSurahLoaded(surah);
+    if (requestId !== state.surahRequestId) return;
     state.practiceAyah = 1;
     preparePracticeAyah();
     const firstPage = surah.ayahs[0]?.pageNumber;
     if (!Number.isInteger(firstPage)) throw new Error("بيانات صفحة بداية السورة غير متاحة.");
     await loadMushafPage(firstPage);
   } catch (error) {
-    showUnavailable(error.message || "تعذر تحميل سورة " + surah.name + ".");
+    if (requestId === state.surahRequestId) showUnavailable(error.message || "تعذر تحميل سورة " + surah.name + ".");
   }
 }
 $("searchInput").addEventListener("input", event => {
