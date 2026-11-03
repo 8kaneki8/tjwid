@@ -439,3 +439,13 @@ body.dark .practice-target{background:var(--paper);border-color:var(--accent-bor
 body.dark .word-correct{color:#8ce0ad;background:#163b2a}
 body.dark .word-wrong{color:#ff9ca5;background:#4a2027}
 @media(max-width:760px){.reader-tools{grid-template-columns:1fr}.practice-heading{flex-direction:column}.practice-options{gap:12px;flex-direction:column}.practice-actions button{flex:1}.top-nav{gap:3px}}
+
+
+/* Inline Tarteel-inspired listening area below the Mushaf */
+.practice-panel{margin-top:26px;position:relative;overflow:hidden}
+.practice-panel:before{content:"";position:absolute;inset:10px;border:1px solid color-mix(in srgb,var(--accent) 15%,transparent);border-radius:13px;pointer-events:none}
+.practice-heading,.practice-options,.practice-target,.practice-live,.practice-actions,.practice-status,.practice-disclaimer{position:relative}
+.practice-live{margin:10px 0 0;padding:10px 13px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);font-size:12px;line-height:1.8;min-height:40px}
+.word-review{color:#9a6700;background:#fff4d6;text-decoration:underline dotted #c58b18;text-underline-offset:5px}
+body.dark .word-review{color:#f3cf77;background:#493b1b}
+.practice-actions .primary-audio{min-width:150px}
