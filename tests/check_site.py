@@ -18,7 +18,7 @@ parser.feed(html)
 
 duplicates = sorted({item for item in parser.ids if parser.ids.count(item) > 1})
 assert not duplicates, f"Duplicate HTML ids: {duplicates}"
-missing = sorted(set(re.findall(r'\\$\\(["\\']([^"\\']+)["\\']\\)', app)) - set(parser.ids))
+missing = sorted(set(re.findall(r'\\$\\("([^"]+)"\\)', app)) - set(parser.ids))
 assert not missing, f"JavaScript references missing DOM ids: {missing}"
 
 required_controls = [
