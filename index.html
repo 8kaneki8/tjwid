@@ -18,7 +18,7 @@
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
     <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#recitation">الاستماع</a><a href="#practice">التسميع</a></nav>
-    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue" selected>أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
+    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green" selected>أخضر</option><option value="blue">أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
   </header>
 
   <main>
@@ -38,7 +38,7 @@
 
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
-        <article class="mushaf-panel" aria-live="polite">
+        <article class="mushaf-panel" id="mushafPanel" aria-live="polite">
           <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
