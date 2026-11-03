@@ -352,28 +352,49 @@ function playPracticeErrorTone() {
     oscillator.onended = () => context.close();
   } catch {}
 }
-function applyPracticeTranscript(transcript) {
-  const spoken = String(transcript || "").trim().split(/\s+/).filter(Boolean);
+function applyPracticeTranscript(transcript, alternatives = []) {
+  const spoken = [transcript, ...alternatives].map(value => String(value || "").trim()).filter(Boolean);
   if (!spoken.length) return;
+  const tokens = spoken.flatMap(value => value.split(/\\s+/)).filter(Boolean);
   let changed = false;
-  for (const token of spoken) {
+  for (const token of tokens) {
     if (state.practiceIndex >= state.practiceWords.length) break;
-    const expected = state.practiceWords[state.practiceIndex];
     const heard = normalizeArabicWord(token);
-    const wanted = normalizeArabicWord(expected.text);
     if (!heard) continue;
-    expected.status = heard === wanted ? "correct" : "wrong";
-    expected.heard = token;
-    if (expected.status === "wrong") playPracticeErrorTone();
-    state.practiceIndex++;
-    changed = true;
+    // ASR often drops or merges short Arabic words. Look a few words ahead
+    // before flagging a mismatch so one missed token does not shift the whole ayah.
+    const lookAhead = Math.min(3, state.practiceWords.length - state.practiceIndex - 1);
+    let matchedAt = -1;
+    for (let offset = 0; offset <= lookAhead; offset++) {
+      const expected = state.practiceWords[state.practiceIndex + offset];
+      if (normalizeArabicWord(expected.text) === heard) { matchedAt = state.practiceIndex + offset; break; }
+    }
+    if (matchedAt >= 0) {
+      while (state.practiceIndex < matchedAt) {
+        const skipped = state.practiceWords[state.practiceIndex++];
+        skipped.status = "review";
+        skipped.heard = "";
+        changed = true;
+      }
+      const expected = state.practiceWords[state.practiceIndex++];
+      expected.status = "correct";
+      expected.heard = token;
+      changed = true;
+    } else {
+      const expected = state.practiceWords[state.practiceIndex++];
+      expected.status = "wrong";
+      expected.heard = token;
+      playPracticeErrorTone();
+      changed = true;
+    }
   }
   if (changed) {
     renderPracticeWords();
     const correct = state.practiceWords.filter(word => word.status === "correct").length;
     const wrong = state.practiceWords.filter(word => word.status === "wrong").length;
-    $("practiceStatus").textContent = "تم التعرف على " + state.practiceIndex + " من " + state.practiceWords.length + " كلمة · مطابق: " + correct + " · اختلاف محتمل: " + wrong;
-    if (state.practiceIndex >= state.practiceWords.length) stopPractice("انتهى تسميع الآية. راجع الكلمات المعلّمة قبل الانتقال.");
+    const review = state.practiceWords.filter(word => word.status === "review").length;
+    $("practiceStatus").textContent = "تمت مراجعة " + state.practiceIndex + " من " + state.practiceWords.length + " كلمة · مطابقة: " + correct + " · اختلاف محتمل: " + wrong + " · كلمات تحتاج مراجعة: " + review;
+    if (state.practiceIndex >= state.practiceWords.length) stopPractice("انتهى التسميع. راجع الكلمات المعلّمة؛ فقد يؤثر إسقاط كلمة أو دمجها في دقة المطابقة.");
   }
 }
 function stopPractice(message) {
@@ -396,7 +417,7 @@ function startPractice() {
   const recognition = new Recognition();
   recognition.lang = "ar-SA";
   recognition.continuous = true;
-  recognition.interimResults = true;
+  recognition.interimResults = true;\n  recognition.maxAlternatives = 4;
   state.practiceRecognition = recognition;
   $("startPractice").disabled = true;
   $("stopPractice").disabled = false;
@@ -427,7 +448,7 @@ function startPractice() {
 $("startPractice").addEventListener("click", startPractice);
 $("stopPractice").addEventListener("click", () => stopPractice("تم إيقاف التسميع."));
 $("hidePracticeAyah").addEventListener("change", renderPracticeWords);
-$("nextPracticeAyah").addEventListener("click", () => {
+$("resetPractice").addEventListener("click", () => {\n  stopPractice();\n  preparePracticeAyah();\n  $("practiceLiveTranscript").textContent = "تمت إعادة الآية من البداية.";\n});\n$("nextPracticeAyah").addEventListener("click", () => {
   const surah = state.surahs.find(item => item.id === state.selected);
   if (!surah) return;
   stopPractice();
