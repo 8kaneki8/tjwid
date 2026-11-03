@@ -415,7 +415,7 @@ function applyPracticeTranscript(transcript, alternatives = []) {
 const PRACTICE_SEGMENT_MS = 6500;
 
 function getAsrApiUrl() {
-  return String($("asrApiUrl").value || "").trim().replace(/\\/+$/, "");
+  let url = String($("asrApiUrl").value || "").trim();\n  while (url.endsWith("/")) url = url.slice(0, -1);\n  return url;
 }
 
 async function transcribePracticeSegment(session, blob) {
@@ -543,7 +543,7 @@ $("asrApiUrl").value = (() => {
 })();
 $("saveAsrApiUrl").addEventListener("click", async () => {
   const url = getAsrApiUrl();
-  if (!/^https:\\/\\//i.test(url)) {
+  if (!url.startsWith("https://")) {
     $("practiceStatus").textContent = "اكتب رابط HTTPS كاملًا لخدمة التسميع.";
     return;
   }
