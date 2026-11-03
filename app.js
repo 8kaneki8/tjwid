@@ -432,7 +432,8 @@ function startPractice() {
   const recognition = new Recognition();
   recognition.lang = "ar-SA";
   recognition.continuous = true;
-  recognition.interimResults = true;\n  recognition.maxAlternatives = 4;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 4;
   state.practiceRecognition = recognition;
   $("startPractice").disabled = true;
   $("stopPractice").disabled = false;
@@ -475,7 +476,11 @@ function startPractice() {
 $("startPractice").addEventListener("click", startPractice);
 $("stopPractice").addEventListener("click", () => stopPractice("تم إيقاف التسميع."));
 $("hidePracticeAyah").addEventListener("change", renderPracticeWords);
-$("resetPractice").addEventListener("click", () => {\n  stopPractice();\n  preparePracticeAyah();\n  $("practiceLiveTranscript").textContent = "تمت إعادة الآية من البداية.";\n});\n$("nextPracticeAyah").addEventListener("click", () => {
+$("resetPractice").addEventListener("click", () => {
+  stopPractice();
+  preparePracticeAyah();
+  $("practiceLiveTranscript").textContent = "تمت إعادة الآية من البداية.";
+});\n$("nextPracticeAyah").addEventListener("click", () => {
   const surah = state.surahs.find(item => item.id === state.selected);
   if (!surah) return;
   stopPractice();
