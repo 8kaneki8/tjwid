@@ -1,0 +1,20 @@
+{
+  "name": "تجويد — رفيق رحلتك مع القرآن",
+  "short_name": "تجويد",
+  "description": "مصحف رقمي للقراءة والاستماع والتدرب على التلاوة",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f5f0",
+  "theme_color": "#123d32",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
