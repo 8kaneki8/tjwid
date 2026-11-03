@@ -158,7 +158,7 @@ async function apiJson(path, params = {}) {
   return response.json();
 }
 async function ensureSurahLoaded(surah) {
-  if (surah.ayahs.length === surah.verses && surah.ayahs.every(item => item.text)) return;
+  if (surah.ayahs.length === surah.verses && surah.ayahs.every((item, index) => item.text && item.number === index + 1)) return;
   const textField = state.script === "simple" ? "text_uthmani_simple" : "text_uthmani";
   const verses = [];
   const pages = Math.ceil(surah.verses / 50);
@@ -196,20 +196,22 @@ function renderAyahs() {
     group.ayahs.push(verse);
   }
   for (const group of groups) {
-    if (group.ayahs[0].number === 1 && group.surah.id !== 1 && group.surah.id !== 9) {
-      const basmala = document.createElement("div");
-      basmala.className = "page-basmala";
-      basmala.textContent = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
-      root.append(basmala);
+    if (group.ayahs[0].number === 1) {
+      const heading = document.createElement("div");
+      heading.className = "surah-heading";
+      const title = document.createElement("h3");
+      title.textContent = "سُورَةُ " + group.surah.name;
+      const subtitle = document.createElement("p");
+      subtitle.textContent = group.surah.verses + " آية";
+      heading.append(title, subtitle);
+      root.append(heading);
+      if (group.surah.id !== 1 && group.surah.id !== 9) {
+        const basmala = document.createElement("div");
+        basmala.className = "page-basmala";
+        basmala.textContent = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+        root.append(basmala);
+      }
     }
-    const heading = document.createElement("div");
-    heading.className = "surah-heading";
-    const title = document.createElement("h3");
-    title.textContent = "سُورَةُ " + group.surah.name;
-    const subtitle = document.createElement("p");
-    subtitle.textContent = group.surah.verses + " آية";
-    heading.append(title, subtitle);
-    root.append(heading);
     const text = document.createElement("div");
     text.className = "ayah-text";
     for (const ayah of group.ayahs) {
