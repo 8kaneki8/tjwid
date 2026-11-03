@@ -294,14 +294,14 @@ $("prevSurah").addEventListener("click", () => state.selected > 1 && selectSurah
 $("nextSurah").addEventListener("click", () => state.selected < 114 && selectSurah(state.selected + 1));
 
 function normalizeArabicWord(word) {
-  return String(word || "").normalize("NFKC").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/[^\\u0621-\\u064A]/g, "");
+  return String(word || "").normalize("NFKC").replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/[^\u0621-\u064A]/g, "");
 }
 function currentPracticeAyah() {
   const surah = state.surahs.find(item => item.id === state.selected);
   return surah?.ayahs.find(item => item.number === state.practiceAyah) || surah?.ayahs[0] || null;
 }
 function practiceWordsFromAyah(ayah) {
-  return ayah ? ayah.text.trim().split(/\\s+/).filter(Boolean) : [];
+  return ayah ? ayah.text.trim().split(/\s+/).filter(Boolean) : [];
 }
 function renderPracticeWords() {
   const target = $("practiceTarget");
@@ -350,7 +350,7 @@ function playPracticeErrorTone() {
   } catch {}
 }
 function applyPracticeTranscript(transcript) {
-  const spoken = String(transcript || "").trim().split(/\\s+/).filter(Boolean);
+  const spoken = String(transcript || "").trim().split(/\s+/).filter(Boolean);
   if (!spoken.length) return;
   let changed = false;
   for (const token of spoken) {
@@ -439,6 +439,7 @@ async function playAyah(number) {
   if (!surah || !surah.ayahs.some(item => item.number === Number(number))) return;
   const audio = $("recitationAudio");
   state.audioAyah = Number(number); state.audioSurah = surah.id;
+  if (state.practiceAyah !== Number(number)) { stopPractice(); state.practiceAyah = Number(number); preparePracticeAyah(); }
   renderAyahs(surah);
   const active = document.querySelector('.ayah[data-ayah="' + number + '"]');
   if (active) active.scrollIntoView({ behavior: "smooth", block: "nearest" });
