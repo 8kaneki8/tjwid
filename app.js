@@ -423,7 +423,7 @@ $("nextPracticeAyah").addEventListener("click", () => {
   state.practiceAyah = Math.min((state.practiceAyah || 1) + 1, surah.verses);
   preparePracticeAyah();
 });
-\nfunction audioFileUrl(surahId, ayahNumber) {
+function audioFileUrl(surahId, ayahNumber) {
   const pad = value => String(value).padStart(3, "0");
   return "https://everyayah.com/data/" + state.reciter + "/" + pad(surahId) + pad(ayahNumber) + ".mp3";
 }
