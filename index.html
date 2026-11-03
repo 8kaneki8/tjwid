@@ -54,16 +54,7 @@
           <label class="practice-check"><input id="practiceBeep" type="checkbox" checked><span>تنبيه صوتي عند اختلاف الكلمة</span></label>
         </div>
         <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ التسميع للآية الأولى.</p></div>
-        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p>
-        <div class="practice-api-config">
-          <label for="asrApiUrl">رابط محرك التسميع</label>
-          <div class="practice-api-row">
-            <input id="asrApiUrl" type="url" inputmode="url" placeholder="https://عنوان-خدمة-المحرك" autocomplete="url">
-            <button id="saveAsrApiUrl" class="audio-action" type="button">حفظ وتجربة الرابط</button>
-          </div>
-          <small>للتجربة المحلية شغّل خدمة asr-api ثم استخدم رابطها المحلي. عند تشغيل الخدمة على الإنترنت استخدم رابط HTTPS. لا تضع مفاتيح سرية هنا.</small>
-        </div>
-        <div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
+        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p><div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
         <p id="practiceStatus" class="practice-status" role="status">بعد نشر محرك التسميع، أدخل رابطه هنا واسمح باستخدام الميكروفون.</p>
         <p class="practice-disclaimer">ملاحظة: يعتمد التسميع على نموذج مفتوح متخصص في التلاوة ثم مقارنة النص بالآية. قد يخطئ النموذج، ولا تمثل النتيجة حكمًا على صحة التجويد أو المخارج.</p>
       </section>
