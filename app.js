@@ -74,7 +74,7 @@ function renderSurahs() {
   const filtered = state.surahs.filter(s =>
     !q || normalizeSurahSearch(s.name).includes(q) || String(s.id) === q
   );
-  $("surahCount").textContent = state.surahs.length ? state.surahs.length + " سورة" : "—";
+  $("surahCount").textContent = !state.surahs.length ? "—" : filtered.length === state.surahs.length ? state.surahs.length + " سورة" : filtered.length + " من " + state.surahs.length;
   for (const s of state.surahs) {
     const option = document.createElement("option");
     option.value = s.id; option.textContent = s.name; select.append(option);
@@ -383,6 +383,9 @@ async function loadQuran() {
   try { position = JSON.parse(localStorage.getItem("tajweed-last-position") || "null"); } catch {}
   let legacyBookmark = null;
   try { legacyBookmark = JSON.parse(localStorage.getItem("tajweed-bookmark") || "null"); } catch {}
+  const resumeLink = $("continueReading");
+  const resumePage = Number(position?.page || legacyBookmark?.page);
+  if (resumeLink) resumeLink.hidden = !(Number.isInteger(resumePage) && resumePage >= 1 && resumePage <= 604);
   const savedSurah = Number(position?.surah || legacyBookmark?.surah || legacyBookmark || 1);
   await selectSurah(Math.min(114, Math.max(1, savedSurah)));
   const savedPage = Number(position?.page || legacyBookmark?.page);
