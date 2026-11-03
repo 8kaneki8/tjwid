@@ -443,6 +443,8 @@ function finishPracticeSession(session, message) {
   state.practiceRecorder = null;
   $("startPractice").disabled = false;
   $("stopPractice").disabled = true;
+  $("resetPractice").disabled = false;
+  $("nextPracticeAyah").disabled = false;
   if (message) $("practiceStatus").textContent = message;
 }
 
@@ -530,6 +532,8 @@ async async function startPractice() {
     state.practiceRecorder = session;
     $("startPractice").disabled = true;
     $("stopPractice").disabled = false;
+    $("resetPractice").disabled = true;
+    $("nextPracticeAyah").disabled = true;
     $("resetPractice").disabled = true;
     $("nextPracticeAyah").disabled = true;
     $("practiceStatus").textContent = "الميكروفون يعمل. اقرأ الآية؛ ستصل المقاطع تباعًا إلى محرك القرآن.";
