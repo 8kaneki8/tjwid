@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#reader">تخطَّ إلى المصحف</a>
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
     <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#tajweedTools">التجويد</a><a href="#recitation">الاستماع</a><a href="#practice">الحفظ والتدريب</a></nav>
@@ -23,7 +24,7 @@
 
   <main>
     <section class="welcome-hero" id="home" aria-labelledby="welcomeTitle">
-      <div class="hero-copy"><span class="hero-kicker"><span class="hero-kicker-dot"></span> مَسَاحَةٌ لِصُحْبَةِ القُرْآن</span><h1 id="welcomeTitle">اجعل للقرآن <em>موعدًا</em> في يومك</h1><p>اقرأ على مهل، واستمع بقلب حاضر، وواصل من حيث توقفت.</p><div class="hero-actions"><a class="hero-primary" href="#reader">ابدأ القراءة <span aria-hidden="true">←</span></a><a class="hero-secondary" href="#recitation">استمع للتلاوة</a></div></div>
+      <div class="hero-copy"><span class="hero-kicker"><span class="hero-kicker-dot"></span> مَسَاحَةٌ لِصُحْبَةِ القُرْآن</span><h1 id="welcomeTitle">اجعل للقرآن <em>موعدًا</em> في يومك</h1><p>اقرأ على مهل، واستمع بقلب حاضر، وواصل من حيث توقفت.</p><div class="hero-actions"><a class="hero-primary" href="#reader">ابدأ القراءة <span aria-hidden="true">←</span></a><a class="hero-secondary" id="continueReading" href="#reader" hidden>تابع من حيث توقفت</a><a class="hero-secondary" href="#recitation">استمع للتلاوة</a></div></div>
       <div class="hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><div class="hero-book"><span>۞</span><strong>الْقُرْآنُ الْكَرِيم</strong><small>نُورٌ وَهُدًى</small></div></div>
       <div class="hero-facts"><div><strong>١١٤</strong><span>سورة</span></div><i></i><div><strong>٦٠٤</strong><span>صفحة</span></div><i></i><div><strong>٣٠</strong><span>جزءًا</span></div></div>
     </section>
@@ -45,7 +46,7 @@
       <div class="tajweed-tools" id="tajweedTools"><div class="tool-section-heading"><strong>أدوات التجويد</strong><span>تعلّم الأحكام أثناء القراءة</span></div><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
 
       <div class="reader-layout">
-        <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
+        <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list" aria-label="قائمة السور" aria-live="polite" aria-relevant="additions text"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" id="mushafPanel" aria-live="polite">
           <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">＋ حفظ علامة</button><label class="bookmark-select"><span class="sr-only">المواضع المحفوظة</span><select id="bookmarksSelect" aria-label="الانتقال إلى موضع محفوظ"><option value="">المواضع المحفوظة</option></select></label></div>
           <div id="readingContent" class="reading-content">
