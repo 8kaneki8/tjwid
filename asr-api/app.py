@@ -14,10 +14,9 @@ import soundfile as sf
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from huggingface_hub import hf_hub_download
-from scipy.signal import resample_poly
 
 MODEL_ID = os.getenv("ASR_MODEL_ID", "Abdou/quran-asr-small")
-MODEL_DIR = Path(os.getenv("ASR_MODEL_DIR", "/data/models/quran-asr-small"))
+MODEL_DIR = Path(os.getenv("ASR_MODEL_DIR", "/tmp/models/quran-asr-small"))
 MAX_AUDIO_BYTES = int(os.getenv("MAX_AUDIO_BYTES", str(4 * 1024 * 1024)))
 MAX_AUDIO_SECONDS = float(os.getenv("MAX_AUDIO_SECONDS", "12"))
 RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", "30"))
@@ -50,7 +49,7 @@ def load_recognizer():
     return sherpa_onnx.OfflineRecognizer.from_zipformer_ctc(
         model=model_path,
         tokens=tokens_path,
-        num_threads=max(1, min(4, os.cpu_count() or 1)),
+        num_threads=max(1, min(2, int(os.getenv("ASR_NUM_THREADS", "1")))),
         sample_rate=16000,
         feature_dim=80,
         decoding_method="greedy_search",
@@ -111,10 +110,7 @@ def decode_audio(raw: bytes) -> np.ndarray:
         raise ValueError("لم يتم العثور على صوت داخل التسجيل.")
     mono = samples.mean(axis=1)
     if sample_rate != 16000:
-        # FFmpeg already requests 16 kHz; keep this guard for unusual decoder output.
-        from math import gcd
-        divisor = gcd(int(sample_rate), 16000)
-        mono = resample_poly(mono, 16000 // divisor, int(sample_rate) // divisor).astype(np.float32)
+        raise ValueError("تعذر تحويل التسجيل إلى 16 كيلوهرتز.")
     if not np.isfinite(mono).all():
         raise ValueError("التسجيل الصوتي غير صالح.")
     duration = len(mono) / 16000
