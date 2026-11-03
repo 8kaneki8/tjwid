@@ -511,7 +511,7 @@ function stopPractice(message) {
   }
 }
 
-async async function startPractice() {
+async function startPractice() {
   if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
   if (!getAsrApiUrl()) {
     $("practiceStatus").textContent = "أدخل رابط محرك التسميع الذي نشرته ثم اضغط «حفظ وتجربة الرابط».";
