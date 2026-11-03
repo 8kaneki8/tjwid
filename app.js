@@ -13,7 +13,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, fontSize: 33, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceSurah: null, practiceWords: [], practiceRecorder: null, practiceIndex: 0, fontSize: 33, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -292,7 +292,7 @@ async function loadMushafPage(page) {
     state.selected = verses[0].surahId;
     $("surahSelect").value = String(state.selected);
     const selectedChapter = state.surahs[state.selected - 1];
-    if (!selectedChapter.ayahs.some(item => item.number === state.practiceAyah)) {
+    if (state.practiceSurah !== state.selected || !selectedChapter.ayahs.some(item => item.number === state.practiceAyah)) {
       state.practiceAyah = verses.find(item => item.surahId === state.selected)?.number || 1;
       preparePracticeAyah();
     }
@@ -340,7 +340,7 @@ async function loadQuran() {
   $("readerStatus").textContent = "جاهز لتحميل المصحف من مصدره النصي.";
   let bookmark = null;
   try { bookmark = JSON.parse(localStorage.getItem("tajweed-bookmark") || "null"); } catch {}
-  const savedSurah = Number(bookmark?.surah) || 1;
+  const savedSurah = Number(bookmark?.surah || bookmark) || 1;
   await selectSurah(Math.min(114, Math.max(1, savedSurah)));
   if (Number.isInteger(Number(bookmark?.page)) && bookmark.page >= 1 && bookmark.page <= 604) {
     await loadMushafPage(bookmark.page);
@@ -455,6 +455,7 @@ function renderPracticeWords() {
 function preparePracticeAyah() {
   const ayah = currentPracticeAyah();
   state.practiceAyah = ayah?.number || 1;
+  state.practiceSurah = state.selected;
   state.practiceWords = practiceWordsFromAyah(ayah).map(text => ({text, status:"pending"}));
   state.practiceIndex = 0;
   renderPracticeWords();
@@ -699,7 +700,7 @@ async function playAyah(number) {
   if (!surah.ayahs.some(item => item.number === Number(number))) return;
   const audio = $("recitationAudio");
   state.audioAyah = Number(number); state.audioSurah = surah.id;
-  if (state.practiceAyah !== Number(number)) { stopPractice(); state.practiceAyah = Number(number); preparePracticeAyah(); }
+  if (state.practiceSurah !== surah.id || state.practiceAyah !== Number(number)) { stopPractice(); state.practiceAyah = Number(number); preparePracticeAyah(); }
   renderAyahs(surah);
   const active = document.querySelector('.ayah[data-ayah="' + number + '"]');
   if (active) active.scrollIntoView({ behavior: "smooth", block: "nearest" });
