@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#205fa8">
-  <meta name="description" content="تجويد — مساحة متكاملة لقراءة القرآن والاستماع والتسميع ومتابعة التلاوة.">
-  <title>تجويد | اقرأ واستمع وسمّع</title>
+  <meta name="theme-color" content="#123d32">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <meta name="description" content="تجويد — مصحف رقمي للقراءة صفحة بصفحة، والاستماع إلى التلاوات، والتدرب على الحفظ والتجويد.">
+  <title>تجويد — رفيق رحلتك مع القرآن</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,11 +17,16 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
-    <nav class="top-nav" aria-label="التنقل الرئيسي"><a class="active" href="#reader">المصحف</a><a href="#recitation">استمع</a><a href="#practice">سمّع</a></nav>
+    <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#recitation">الاستماع</a><a href="#practice">التسميع</a></nav>
     <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue" selected>أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
   </header>
 
   <main>
+    <section class="welcome-hero" id="home" aria-labelledby="welcomeTitle">
+      <div class="hero-copy"><span class="hero-kicker"><span class="hero-kicker-dot"></span> مَسَاحَةٌ لِصُحْبَةِ القُرْآن</span><h1 id="welcomeTitle">اجعل للقرآن <em>موعدًا</em> في يومك</h1><p>اقرأ على مهل، واستمع بقلب حاضر، وواصل من حيث توقفت.</p><div class="hero-actions"><a class="hero-primary" href="#reader">ابدأ القراءة <span aria-hidden="true">←</span></a><a class="hero-secondary" href="#recitation">استمع للتلاوة</a></div></div>
+      <div class="hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><div class="hero-book"><span>۞</span><strong>الْقُرْآنُ الْكَرِيم</strong><small>نُورٌ وَهُدًى</small></div></div>
+      <div class="hero-facts"><div><strong>١١٤</strong><span>سورة</span></div><i></i><div><strong>٦٠٤</strong><span>صفحة</span></div><i></i><div><strong>٣٠</strong><span>جزءًا</span></div></div>
+    </section>
     <section class="reader-section" id="reader">
       <div class="section-heading"><div><p class="eyebrow">المصحف الشريف</p><h2>اقرأ صفحةً صفحة</h2></div><span class="riwaya">رواية حفص عن عاصم · ١١٤ سورة</span></div>
       <div class="reader-tools">
@@ -31,11 +39,11 @@
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
           </div>
-          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>الصفحة السابقة</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>الصفحة التالية</button></div>
+          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>‹ الصفحة السابقة</button><label class="page-jump">اذهب إلى <input id="pageJump" type="number" min="1" max="604" value="1" inputmode="numeric" aria-label="رقم الصفحة"> <span>من ٦٠٤</span></label><button id="goToPage" class="secondary-button">انتقال</button><span id="readerStatus">جارٍ تجهيز المصحف</span><button id="nextSurah" class="secondary-button" disabled>الصفحة التالية ›</button></div>
         </article>
       </div>
       <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
@@ -48,21 +56,21 @@
       </section>
 
       <section class="practice-panel" id="practice" aria-labelledby="practiceTitle">
-        <div class="practice-heading"><div><p class="eyebrow">تدرّب على التلاوة</p><h3 id="practiceTitle">التسميع الذكي</h3><p>اقرأ الآية بصوتك، وتابع الكلمات التي التقطها التعرّف الصوتي.</p></div><span class="practice-chip">نسخة تجريبية</span></div>
+        <div class="practice-heading"><div><p class="eyebrow">تدرّب على التلاوة</p><h3 id="practiceTitle">التسميع الذكي</h3><p>اقرأ الآية بصوتك، وتابع الكلمات التي التقطها التعرّف الصوتي.</p></div><span class="practice-chip">قريبًا</span></div>
         <div class="practice-options">
           <label class="practice-check"><input id="hidePracticeAyah" type="checkbox"><span>إخفاء الآية أثناء التسميع</span></label>
           <label class="practice-check"><input id="practiceBeep" type="checkbox" checked><span>تنبيه صوتي عند اختلاف الكلمة</span></label>
         </div>
         <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ التسميع للآية الأولى.</p></div>
-        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p><div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
-        <p id="practiceStatus" class="practice-status" role="status">بعد نشر محرك التسميع، أدخل رابطه هنا واسمح باستخدام الميكروفون.</p>
+        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p><div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button" disabled>التسميع الصوتي قريبًا</button><button id="stopPractice" class="audio-action" type="button" disabled hidden>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
+        <p id="practiceStatus" class="practice-status" role="status">ميزة التسميع الصوتي قيد التجهيز. أدوات إخفاء الآية والتدرّب عليها متاحة الآن، ولن نعرض نتيجة صوتية قبل اكتمال المحرك.</p>
         <p class="practice-disclaimer">ملاحظة: يعتمد التسميع على نموذج مفتوح متخصص في التلاوة ثم مقارنة النص بالآية. قد يخطئ النموذج، ولا تمثل النتيجة حكمًا على صحة التجويد أو المخارج.</p>
       </section>
     </section>
 
     <section class="about-section" id="about"><div class="about-icon">۞</div><div><p class="eyebrow">أمانة النص</p><h2>القرآن يُنقل كما أُنزل</h2><p>نعتمد نصًا موثقًا برواية حفص عن عاصم، ونحافظ عليه دون إعادة صياغة أو تعديل. لن تُفعّل القراءة الكاملة حتى تجتاز بيانات النص اختبارات التحقق.</p><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني: مشروع تنزيل ↗</a></div></section>
   </main>
-  <footer><span>تجويد</span><span>اللهم اجعل القرآن ربيع قلوبنا</span><span>رواية حفص عن عاصم</span></footer>
+  <footer><span class="footer-brand">تجويد <small>رفيق تلاوتك</small></span><span>اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا</span><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني</a></footer>
   <script src="app.js" defer></script>
 </body>
 </html>
