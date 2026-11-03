@@ -353,27 +353,42 @@ function playPracticeErrorTone() {
   } catch {}
 }
 function applyPracticeTranscript(transcript, alternatives = []) {
-  const spoken = [transcript, ...alternatives].map(value => String(value || "").trim()).filter(Boolean);
-  if (!spoken.length) return;
-  const tokens = spoken.flatMap(value => value.split(/\\s+/)).filter(Boolean);
+  const candidates = [transcript, ...alternatives]
+    .map(value => String(value || "").trim().split(/\\s+/).filter(Boolean))
+    .filter(words => words.length);
+  if (!candidates.length) return;
+  // Alternatives are competing hypotheses for the same audio, not extra words.
+  // Choose the hypothesis that best follows the next expected Quran words.
+  const scoreCandidate = words => {
+    let cursor = state.practiceIndex, score = 0;
+    for (const token of words) {
+      const heard = normalizeArabicWord(token);
+      if (!heard) continue;
+      let found = -1;
+      for (let offset = 0; offset <= Math.min(3, state.practiceWords.length - cursor - 1); offset++) {
+        if (normalizeArabicWord(state.practiceWords[cursor + offset].text) === heard) { found = cursor + offset; break; }
+      }
+      if (found >= 0) { score += 5 - (found - cursor); cursor = found + 1; }
+      else score -= 1;
+    }
+    return score;
+  };
+  const spoken = candidates.reduce((best, candidate) => scoreCandidate(candidate) > scoreCandidate(best) ? candidate : best);
   let changed = false;
-  for (const token of tokens) {
+  for (const token of spoken) {
     if (state.practiceIndex >= state.practiceWords.length) break;
     const heard = normalizeArabicWord(token);
     if (!heard) continue;
-    // ASR often drops or merges short Arabic words. Look a few words ahead
-    // before flagging a mismatch so one missed token does not shift the whole ayah.
     const lookAhead = Math.min(3, state.practiceWords.length - state.practiceIndex - 1);
     let matchedAt = -1;
     for (let offset = 0; offset <= lookAhead; offset++) {
-      const expected = state.practiceWords[state.practiceIndex + offset];
-      if (normalizeArabicWord(expected.text) === heard) { matchedAt = state.practiceIndex + offset; break; }
+      if (normalizeArabicWord(state.practiceWords[state.practiceIndex + offset].text) === heard) {
+        matchedAt = state.practiceIndex + offset; break;
+      }
     }
     if (matchedAt >= 0) {
       while (state.practiceIndex < matchedAt) {
-        const skipped = state.practiceWords[state.practiceIndex++];
-        skipped.status = "review";
-        skipped.heard = "";
+        state.practiceWords[state.practiceIndex++].status = "review";
         changed = true;
       }
       const expected = state.practiceWords[state.practiceIndex++];
