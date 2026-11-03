@@ -332,6 +332,29 @@ async function selectSurah(id) {
     showUnavailable(error.message || "تعذر تحميل سورة " + surah.name + ".");
   }
 }
+$("searchInput").addEventListener("input", event => {
+  state.query = event.target.value.trim();
+  renderSurahs();
+});
+$("surahSelect").addEventListener("change", event => selectSurah(event.target.value));
+$("scriptSelect").addEventListener("change", async event => {
+  const nextScript = event.target.value === "simple" ? "simple" : "uthmani";
+  if (nextScript === state.script) return;
+  const previousSurah = state.selected || 1;
+  const previousPage = state.pageNumber;
+  state.script = nextScript;
+  state.surahs.forEach(surah => { surah.ayahs = []; });
+  state.pageVerses = [];
+  state.tajweedEnabled = false;
+  $("tajweedToggle").checked = false;
+  $("tajweedToggle").disabled = nextScript === "simple";
+  $("tajweedLegend").hidden = true;
+  $("tajweedStatus").textContent = nextScript === "simple"
+    ? "الرسم المبسط لا يدعم ألوان التجويد في هذه النسخة."
+    : "يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.";
+  await selectSurah(previousSurah);
+  if (previousPage !== state.pageNumber) await loadMushafPage(previousPage);
+});
 async function loadQuran() {
   state.surahs = SURAH_NAMES.map((name, index) => ({
     id: index + 1, name, verses: EXPECTED_AYAHS[index], ayahs: []
