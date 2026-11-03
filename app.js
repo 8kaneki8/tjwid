@@ -14,7 +14,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", audioAyah: null, audioSurah: null };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecognition: null, practiceIndex: 0, audioAyah: null, audioSurah: null };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -292,7 +292,138 @@ $("bookmarkState").addEventListener("click", () => {
 });
 $("prevSurah").addEventListener("click", () => state.selected > 1 && selectSurah(state.selected - 1));
 $("nextSurah").addEventListener("click", () => state.selected < 114 && selectSurah(state.selected + 1));
-function audioFileUrl(surahId, ayahNumber) {
+
+function normalizeArabicWord(word) {
+  return String(word || "").normalize("NFKC").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/[^\\u0621-\\u064A]/g, "");
+}
+function currentPracticeAyah() {
+  const surah = state.surahs.find(item => item.id === state.selected);
+  return surah?.ayahs.find(item => item.number === state.practiceAyah) || surah?.ayahs[0] || null;
+}
+function practiceWordsFromAyah(ayah) {
+  return ayah ? ayah.text.trim().split(/\\s+/).filter(Boolean) : [];
+}
+function renderPracticeWords() {
+  const target = $("practiceTarget");
+  const words = state.practiceWords;
+  if (!words.length) { target.textContent = "اختر سورة أولًا لبدء التسميع."; return; }
+  target.replaceChildren();
+  const hide = $("hidePracticeAyah").checked;
+  words.forEach((word, index) => {
+    const item = document.createElement("span");
+    item.className = "practice-word";
+    const status = word.status || "pending";
+    if (status === "pending" && hide) {
+      item.classList.add("word-hidden");
+      item.textContent = "•••";
+    } else {
+      item.textContent = word.text;
+      item.classList.add("word-" + status);
+    }
+    item.setAttribute("aria-label", status === "correct" ? "كلمة تم التعرف عليها" : status === "wrong" ? "اختلاف محتمل في الكلمة" : "كلمة لم يتم تسميعها بعد");
+    target.append(item);
+  });
+}
+function preparePracticeAyah() {
+  const ayah = currentPracticeAyah();
+  state.practiceAyah = ayah?.number || 1;
+  state.practiceWords = practiceWordsFromAyah(ayah).map(text => ({text, status:"pending"}));
+  state.practiceIndex = 0;
+  renderPracticeWords();
+  $("practiceStatus").textContent = ayah ? "جاهز لتسميع الآية " + ayah.number + " من سورة " + state.surahs[state.selected - 1].name + "." : "اختر سورة أولًا.";
+}
+function playPracticeErrorTone() {
+  if (!$("practiceBeep").checked) return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const context = new AudioContextClass();
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    oscillator.type = "sine"; oscillator.frequency.value = 220;
+    gain.gain.setValueAtTime(0.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.12, context.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.18);
+    oscillator.connect(gain); gain.connect(context.destination);
+    oscillator.start(); oscillator.stop(context.currentTime + 0.2);
+    oscillator.onended = () => context.close();
+  } catch {}
+}
+function applyPracticeTranscript(transcript) {
+  const spoken = String(transcript || "").trim().split(/\\s+/).filter(Boolean);
+  if (!spoken.length) return;
+  let changed = false;
+  for (const token of spoken) {
+    if (state.practiceIndex >= state.practiceWords.length) break;
+    const expected = state.practiceWords[state.practiceIndex];
+    const heard = normalizeArabicWord(token);
+    const wanted = normalizeArabicWord(expected.text);
+    if (!heard) continue;
+    expected.status = heard === wanted ? "correct" : "wrong";
+    expected.heard = token;
+    if (expected.status === "wrong") playPracticeErrorTone();
+    state.practiceIndex++;
+    changed = true;
+  }
+  if (changed) {
+    renderPracticeWords();
+    const correct = state.practiceWords.filter(word => word.status === "correct").length;
+    const wrong = state.practiceWords.filter(word => word.status === "wrong").length;
+    $("practiceStatus").textContent = "تم التعرف على " + state.practiceIndex + " من " + state.practiceWords.length + " كلمة · مطابق: " + correct + " · اختلاف محتمل: " + wrong;
+    if (state.practiceIndex >= state.practiceWords.length) stopPractice("انتهى تسميع الآية. راجع الكلمات المعلّمة قبل الانتقال.");
+  }
+}
+function stopPractice(message) {
+  if (state.practiceRecognition) {
+    try { state.practiceRecognition.stop(); } catch {}
+    state.practiceRecognition = null;
+  }
+  $("startPractice").disabled = false;
+  $("stopPractice").disabled = true;
+  if (message) $("practiceStatus").textContent = message;
+}
+function startPractice() {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition) {
+    $("practiceStatus").textContent = "متصفحك لا يدعم التعرف على الكلام. جرّب Chrome أو Edge بأحدث إصدار.";
+    return;
+  }
+  if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
+  if (!state.practiceWords.length || state.practiceWords.every(word => word.status !== "pending")) preparePracticeAyah();
+  const recognition = new Recognition();
+  recognition.lang = "ar-SA";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  state.practiceRecognition = recognition;
+  $("startPractice").disabled = true;
+  $("stopPractice").disabled = false;
+  $("practiceStatus").textContent = "استمع الآن… اقرأ الآية بوضوح وبسرعتك الطبيعية.";
+  recognition.onresult = event => {
+    let finalText = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) finalText += event.results[i][0].transcript + " ";
+    }
+    if (finalText) applyPracticeTranscript(finalText);
+  };
+  recognition.onerror = event => {
+    stopPractice(event.error === "not-allowed" ? "لم يتم السماح باستخدام الميكروفون. فعّل الإذن من إعدادات المتصفح." : "تعذر التعرف على الصوت: " + event.error);
+  };
+  recognition.onend = () => {
+    if (state.practiceRecognition === recognition) stopPractice("توقف الاستماع. يمكنك بدء التسميع مجددًا لإكمال الكلمات المتبقية.");
+  };
+  try { recognition.start(); } catch { stopPractice("تعذر تشغيل الميكروفون. أعد المحاولة."); }
+}
+$("startPractice").addEventListener("click", startPractice);
+$("stopPractice").addEventListener("click", () => stopPractice("تم إيقاف التسميع."));
+$("hidePracticeAyah").addEventListener("change", renderPracticeWords);
+$("nextPracticeAyah").addEventListener("click", () => {
+  const surah = state.surahs.find(item => item.id === state.selected);
+  if (!surah) return;
+  stopPractice();
+  state.practiceAyah = Math.min((state.practiceAyah || 1) + 1, surah.verses);
+  preparePracticeAyah();
+});
+\nfunction audioFileUrl(surahId, ayahNumber) {
   const pad = value => String(value).padStart(3, "0");
   return "https://everyayah.com/data/" + state.reciter + "/" + pad(surahId) + pad(ayahNumber) + ".mp3";
 }
