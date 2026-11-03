@@ -2,7 +2,7 @@ name: Validate Quran ASR integration
 
 on:
   push:
-    branches: [feat/quran-asr-engine]
+    branches: [feat/quran-asr-engine, feat/tajweed-quran-site]
   pull_request:
     branches: [feat/tajweed-quran-site]
 
