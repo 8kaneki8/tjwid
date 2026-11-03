@@ -480,15 +480,11 @@ function applyPracticeTranscript(transcript, alternatives = []) {
 }
 const PRACTICE_SEGMENT_MS = 6500;
 
-function getAsrApiUrl() {
-  let url = String($("asrApiUrl").value || "").trim();
-  while (url.endsWith("/")) url = url.slice(0, -1);
-  return url;
-}
+const ASR_API_URL = "";
 
 async function transcribePracticeSegment(session, blob) {
-  const apiUrl = getAsrApiUrl();
-  if (!apiUrl) throw new Error("أدخل رابط محرك التسميع واحفظه أولًا.");
+  const apiUrl = ASR_API_URL;
+  if (!apiUrl) throw new Error("محرك التسميع غير متصل حاليًا.");
   const form = new FormData();
   form.append("audio", blob, "recitation-audio");
   const response = await fetch(apiUrl + "/v1/transcribe", { method: "POST", body: form });
@@ -579,9 +575,8 @@ function stopPractice(message) {
 
 async function startPractice() {
   if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
-  if (!getAsrApiUrl()) {
-    $("practiceStatus").textContent = "شغّل خدمة محرك التسميع ثم أدخل رابطها واضغط «حفظ وتجربة الرابط».";
-    $("asrApiUrl").focus();
+  if (!ASR_API_URL) {
+    $("practiceStatus").textContent = "محرك التسميع غير متاح حاليًا. يمكنك متابعة القراءة والاستماع.";
     return;
   }
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
@@ -612,30 +607,6 @@ async function startPractice() {
   }
 }
 
-$("asrApiUrl").value = (() => {
-  try { return localStorage.getItem("tjwid-asr-api-url") || ""; } catch { return ""; }
-})();
-$("saveAsrApiUrl").addEventListener("click", async () => {
-  const url = getAsrApiUrl();
-  const localHttp = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url);
-  if (!url.startsWith("https://") && !localHttp) {
-    $("practiceStatus").textContent = "استخدم رابط HTTPS للخدمة، أو localhost للتجربة على جهازك.";
-    return;
-  }
-  try { localStorage.setItem("tjwid-asr-api-url", url); } catch {}
-  $("saveAsrApiUrl").disabled = true;
-  $("practiceStatus").textContent = "جارٍ اختبار الاتصال بمحرك التسميع…";
-  try {
-    const response = await fetch(url + "/v1/health");
-    const health = await response.json();
-    if (!response.ok || !health.model_loaded) throw new Error("المحرك لم يكتمل تحميله بعد.");
-    $("practiceStatus").textContent = "تم الاتصال بمحرك القرآن بنجاح. يمكنك بدء التسميع.";
-  } catch (error) {
-    $("practiceStatus").textContent = error.message || "تعذر الاتصال. تأكد أن خدمة المحرك تعمل وأن رابطها وإعدادات CORS صحيحان.";
-  } finally {
-    $("saveAsrApiUrl").disabled = false;
-  }
-});
 $("startPractice").addEventListener("click", startPractice);
 $("stopPractice").addEventListener("click", () => stopPractice("تم إيقاف التسميع."));
 $("hidePracticeAyah").addEventListener("change", renderPracticeWords);
