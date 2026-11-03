@@ -469,6 +469,14 @@ function renderBookmarks() {
 $("bookmarkState").addEventListener("click", () => {
   if (!state.selected) return;
   const bookmarks = readBookmarks();
+  const existing = bookmarks.find(item => item.page === state.pageNumber);
+  if (existing) {
+    $("bookmarkState").textContent = "العلامة محفوظة بالفعل";
+    renderBookmarks();
+    $("bookmarksSelect").value = existing.id;
+    $("deleteBookmark").disabled = false;
+    return;
+  }
   const id = String(Date.now()) + "-" + state.pageNumber;
   const name = state.surahs[state.selected - 1]?.name || "القرآن";
   bookmarks.unshift({ id, page: state.pageNumber, surah: state.selected, label: "صفحة " + state.pageNumber + " · " + name, createdAt: new Date().toISOString() });
@@ -477,11 +485,26 @@ $("bookmarkState").addEventListener("click", () => {
     $("bookmarkState").textContent = "♥ تم حفظ العلامة";
     renderBookmarks();
     $("bookmarksSelect").value = id;
+    $("deleteBookmark").disabled = false;
   } catch { $("bookmarkState").textContent = "تعذر حفظ العلامة"; }
 });
 $("bookmarksSelect").addEventListener("change", event => {
   const item = readBookmarks().find(bookmark => bookmark.id === event.target.value);
+  $("deleteBookmark").disabled = !item;
   if (item) loadMushafPage(item.page);
+});
+$("deleteBookmark").addEventListener("click", () => {
+  const selectedId = $("bookmarksSelect").value;
+  if (!selectedId) return;
+  const remaining = readBookmarks().filter(item => item.id !== selectedId);
+  try {
+    localStorage.setItem("tajweed-bookmarks", JSON.stringify(remaining));
+    renderBookmarks();
+    $("deleteBookmark").disabled = true;
+    $("bookmarkState").textContent = "تم حذف العلامة";
+  } catch {
+    $("bookmarkState").textContent = "تعذر حذف العلامة";
+  }
 });
 $("prevSurah").textContent = "الصفحة السابقة";
 $("nextSurah").textContent = "الصفحة التالية";
@@ -499,12 +522,27 @@ function readReadingStats() {
     return { goal: Math.max(1, Math.min(20, Number(value.goal) || 3)), days: value.days && typeof value.days === "object" ? value.days : {} };
   } catch { return { goal: 3, days: {} }; }
 }
+function calculateReadingStreak(days) {
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  const todayKey = localDayKey(cursor);
+  if (!Array.isArray(days[todayKey]) || !days[todayKey].length) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  for (let count = 0; count < 366; count++) {
+    const key = localDayKey(cursor);
+    if (!Array.isArray(days[key]) || !days[key].length) break;
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
 function updateReadingProgress() {
   const stats = readReadingStats();
   const today = stats.days[localDayKey()] || [];
   const unique = new Set(Object.values(stats.days).flat().filter(page => Number.isInteger(page) && page >= 1 && page <= 604));
   $("todayPages").textContent = String(today.length);
   $("visitedPages").textContent = String(unique.size);
+  $("readingStreak").textContent = String(calculateReadingStreak(stats.days));
   $("dailyGoal").value = String(stats.goal);
   $("dailyProgress").max = stats.goal;
   $("dailyProgress").value = Math.min(today.length, stats.goal);

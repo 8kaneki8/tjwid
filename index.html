@@ -33,6 +33,7 @@
       <div class="progress-grid">
         <div class="progress-stat"><span>صفحات فتحتها اليوم</span><strong id="todayPages">0</strong></div>
         <div class="progress-stat"><span>صفحات زرتها</span><strong id="visitedPages">0</strong><small>من 604 صفحة</small></div>
+        <div class="progress-stat"><span>أيام متتابعة</span><strong id="readingStreak">0</strong><small>استمر ولو بصفحة يوميًا</small></div>
         <div class="goal-stat"><label for="dailyGoal">هدفك اليومي <input id="dailyGoal" type="number" min="1" max="20" value="3"> صفحة</label><progress id="dailyProgress" max="3" value="0"></progress><small id="dailyGoalText">ابدأ بقراءة صفحة لتحقيق هدفك</small></div>
       </div>
     </section>
@@ -48,7 +49,7 @@
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list" aria-label="قائمة السور" aria-live="polite" aria-relevant="additions text"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" id="mushafPanel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">＋ حفظ علامة</button><label class="bookmark-select"><span class="sr-only">المواضع المحفوظة</span><select id="bookmarksSelect" aria-label="الانتقال إلى موضع محفوظ"><option value="">المواضع المحفوظة</option></select></label></div>
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">＋ حفظ علامة</button><label class="bookmark-select"><span class="sr-only">المواضع المحفوظة</span><select id="bookmarksSelect" aria-label="الانتقال إلى موضع محفوظ"><option value="">المواضع المحفوظة</option></select></label><button id="deleteBookmark" class="bookmark-delete" type="button" disabled>حذف العلامة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
           </div>

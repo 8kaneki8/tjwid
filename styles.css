@@ -214,3 +214,9 @@ body.dark[data-color-theme="yellow"]{--accent:#d9bd78;--accent-strong:#e7cf96;--
 .hero-actions{align-items:center}
 .surah-list:focus-within{outline:2px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:3px;border-radius:10px}
 @media(max-width:760px){.hero-actions{gap:8px}.hero-primary,.hero-secondary{min-height:41px;padding-inline:13px;font-size:11px}.skip-link{top:6px;right:7px}}
+/* Reading streak and bookmark management */
+.progress-grid{grid-template-columns:1fr 1fr 1fr minmax(220px,1.6fr)}
+.bookmark-delete{padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--muted);font-size:10px;cursor:pointer}
+.bookmark-delete:not(:disabled){border-color:#e7caca;color:#a64d50}
+.bookmark-delete:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:760px){.progress-grid{grid-template-columns:1fr 1fr}.goal-stat{grid-column:1/-1}.mushaf-top .bookmark-delete{flex:0 0 auto}}
