@@ -63,9 +63,17 @@
         </div>
         <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ التسميع للآية الأولى.</p></div>
         <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p>
+        <div class="practice-api-config">
+          <label for="asrApiUrl">رابط محرك التسميع المجاني</label>
+          <div class="practice-api-row">
+            <input id="asrApiUrl" type="url" inputmode="url" placeholder="https://your-space.hf.space" autocomplete="url">
+            <button id="saveAsrApiUrl" class="audio-action" type="button">حفظ وتجربة الرابط</button>
+          </div>
+          <small>ضع رابط Hugging Face Space بعد نشر مجلد asr-api. لا تضع مفاتيح سرية هنا.</small>
+        </div>
         <div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
-        <p id="practiceStatus" class="practice-status" role="status">يحتاج الميكروفون إلى إذن منك. يعمل التعرف الصوتي في المتصفحات الداعمة وعلى اتصال آمن HTTPS.</p>
-        <p class="practice-disclaimer">ملاحظة: المتصفح يحوّل الصوت إلى نص فقط؛ المطابقة تقديرية وقد يخطئ في الكلمات أو الحركات. هذه ليست شهادة آلية بصحة التجويد أو مخارج الحروف.</p>
+        <p id="practiceStatus" class="practice-status" role="status">بعد نشر محرك التسميع، أدخل رابطه هنا واسمح باستخدام الميكروفون.</p>
+        <p class="practice-disclaimer">ملاحظة: يعتمد التسميع على نموذج مفتوح متخصص في التلاوة ثم مقارنة النص بالآية. قد يخطئ النموذج، ولا تمثل النتيجة حكمًا على صحة التجويد أو المخارج.</p>
       </section>
     </section>
 
