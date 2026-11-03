@@ -14,7 +14,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [] };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -69,7 +69,7 @@ function renderSurahs() {
   select.innerHTML = '<option value="">اختر السورة</option>';
   const q = state.query;
   const filtered = state.surahs.filter(s =>
-    !q || s.name.includes(q) || s.ayahs.some(a => a.text.includes(q))
+    !q || s.name.includes(q) || String(s.id) === q
   );
   $("surahCount").textContent = state.surahs.length ? state.surahs.length + " سورة" : "—";
   for (const s of state.surahs) {
@@ -148,24 +148,53 @@ async function loadTajweed(surah) {
   }
 }
 
-function renderAyahs(surah) {
+function apiUrl(path, params = {}) {
+  const url = new URL("https://api.quran.com/api/v4/" + path);
+  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, String(value)));
+  return url.toString();
+}
+async function apiJson(path, params = {}) {
+  const response = await fetch(apiUrl(path, params), { headers: { Accept: "application/json" } });
+  if (!response.ok) throw new Error("خدمة بيانات القرآن غير متاحة الآن (" + response.status + ").");
+  return response.json();
+}
+async function ensureSurahLoaded(surah) {
+  if (surah.ayahs.length === surah.verses && surah.ayahs.every(item => item.text)) return;
+  const textField = state.script === "simple" ? "text_uthmani_simple" : "text_uthmani";
+  const verses = [];
+  const pages = Math.ceil(surah.verses / 50);
+  for (let page = 1; page <= pages; page++) {
+    const payload = await apiJson("verses/by_chapter/" + surah.id, {
+      fields: textField + ",page_number", per_page: 50, page
+    });
+    if (!Array.isArray(payload.verses)) throw new Error("لم تصل آيات سورة " + surah.name + " بصيغة صحيحة.");
+    verses.push(...payload.verses);
+  }
+  if (verses.length !== surah.verses) {
+    throw new Error("لم يكتمل تحميل سورة " + surah.name + "؛ لن نعرض نصًا ناقصًا.");
+  }
+  const parsed = verses.map((verse, index) => {
+    const number = Number(verse.verse_number || String(verse.verse_key || "").split(":")[1]);
+    const text = String(verse[textField] || "").trim();
+    const pageNumber = Number(verse.page_number);
+    if (number !== index + 1 || !text || !Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > 604) {
+      throw new Error("تعذر التحقق من ترتيب آيات سورة " + surah.name + ".");
+    }
+    return { number, text, pageNumber };
+  });
+  surah.ayahs = parsed;
+}
+function renderAyahs() {
   const root = $("readingContent");
   root.replaceChildren();
-  const pageKeys = new Set(state.pageAyahKeys || []);
-  const pageVerses = [];
-  for (const item of state.surahs) {
-    for (const ayah of item.ayahs) {
-      if (pageKeys.has(item.id + ":" + ayah.number)) pageVerses.push({ surah: item, ayah });
-    }
-  }
   const groups = [];
-  for (const entry of pageVerses) {
+  for (const verse of state.pageVerses) {
     let group = groups[groups.length - 1];
-    if (!group || group.surah.id !== entry.surah.id) {
-      group = { surah: entry.surah, ayahs: [] };
+    if (!group || group.surah.id !== verse.surahId) {
+      group = { surah: state.surahs[verse.surahId - 1], ayahs: [] };
       groups.push(group);
     }
-    group.ayahs.push(entry.ayah);
+    group.ayahs.push(verse);
   }
   for (const group of groups) {
     if (group.ayahs[0].number === 1 && group.surah.id !== 1 && group.surah.id !== 9) {
@@ -193,7 +222,10 @@ function renderAyahs(surah) {
       span.setAttribute("tabindex", "0");
       span.setAttribute("aria-label", "استمع إلى سورة " + group.surah.name + " الآية " + ayah.number);
       span.addEventListener("click", () => {
-        if (state.selected !== group.surah.id) state.selected = group.surah.id;
+        state.selected = group.surah.id;
+        $("surahSelect").value = String(group.surah.id);
+        state.practiceAyah = ayah.number;
+        renderSurahs();
         playAyah(ayah.number);
       });
       span.addEventListener("keydown", event => {
@@ -212,115 +244,105 @@ function renderAyahs(surah) {
     }
     root.append(text);
   }
+  const first = state.pageVerses[0];
+  const last = state.pageVerses[state.pageVerses.length - 1];
   $("currentLocation").textContent = "صفحة " + state.pageNumber;
-  $("readerStatus").textContent = "صفحة " + state.pageNumber + " من 604 · " + pageVerses.length + " آية";
+  $("mushafEdition").textContent = first ? "سورة " + state.surahs[first.surahId - 1].name + (first.juzNumber ? " · الجزء " + first.juzNumber : "") : "مصحف المدينة";
+  $("readerStatus").textContent = first && last
+    ? "صفحة " + state.pageNumber + " من 604 · " + state.pageVerses.length + " آية"
+    : "لا توجد آيات لهذه الصفحة";
   $("prevSurah").disabled = state.pageNumber <= 1;
   $("nextSurah").disabled = state.pageNumber >= 604;
+  $("pageJump").value = String(state.pageNumber);
 }
 async function loadMushafPage(page) {
   const target = Math.max(1, Math.min(604, Number(page) || 1));
+  const requestId = ++state.pageRequestId;
   $("readerStatus").textContent = "جارٍ تحميل الصفحة " + target + "…";
+  $("prevSurah").disabled = true;
+  $("nextSurah").disabled = true;
   try {
-    const response = await fetch("https://api.quran.com/api/v4/verses/by_page/" + target + "?fields=page_number&per_page=50");
-    if (!response.ok) throw new Error("تعذر تحميل بيانات ترقيم صفحات المصحف.");
-    const payload = await response.json();
+    const textField = state.script === "simple" ? "text_uthmani_simple" : "text_uthmani";
+    const payload = await apiJson("verses/by_page/" + target, {
+      fields: textField + ",page_number,juz_number,hizb_number", per_page: 50
+    });
+    if (requestId !== state.pageRequestId) return;
     if (!Array.isArray(payload.verses) || !payload.verses.length) throw new Error("لم تصل آيات الصفحة المطلوبة.");
-    const keys = [];
-    for (const verse of payload.verses) {
+    const verses = payload.verses.map(verse => {
       const parts = String(verse.verse_key || "").split(":").map(Number);
-      if (parts.length !== 2 || !Number.isInteger(parts[0]) || !Number.isInteger(parts[1])) continue;
-      const local = state.surahs[parts[0] - 1]?.ayahs.find(item => item.number === parts[1]);
-      if (!local) throw new Error("بيانات الصفحة لا تطابق نص المصحف المحلي؛ أوقفنا العرض حفاظًا على سلامة النص.");
-      keys.push(parts[0] + ":" + parts[1]);
-    }
-    if (!keys.length) throw new Error("بيانات الصفحة غير مكتملة.");
+      const number = Number(verse.verse_number || parts[1]);
+      const text = String(verse[textField] || "").trim();
+      if (parts.length !== 2 || !Number.isInteger(parts[0]) || !Number.isInteger(number) || !text) {
+        throw new Error("بيانات الصفحة غير مكتملة؛ أوقفنا العرض حفاظًا على سلامة النص.");
+      }
+      const chapter = state.surahs[parts[0] - 1];
+      if (!chapter) throw new Error("رقم السورة الوارد من المصدر غير صالح.");
+      const cached = chapter.ayahs.find(item => item.number === number);
+      if (cached && cached.text !== text) throw new Error("اختلف نص الصفحة عن النص الذي تم التحقق منه للسورة؛ لم نعرض الصفحة.");
+      if (!cached) chapter.ayahs.push({ number, text, pageNumber: Number(verse.page_number) || target });
+      return {
+        surahId: parts[0], number, text,
+        pageNumber: Number(verse.page_number) || target,
+        juzNumber: Number(verse.juz_number) || null,
+        hizbNumber: Number(verse.hizb_number) || null
+      };
+    });
     state.pageNumber = target;
-    state.pageAyahKeys = keys;
-    const first = Number(keys[0].split(":")[0]);
-    state.selected = first;
-    const surah = state.surahs[first - 1];
-    $("surahSelect").value = String(first);
+    state.pageVerses = verses;
+    state.pageAyahKeys = verses.map(item => item.surahId + ":" + item.number);
+    state.selected = verses[0].surahId;
+    $("surahSelect").value = String(state.selected);
     renderSurahs();
-    renderAyahs(surah);
+    renderAyahs();
     if (state.tajweedEnabled && state.script === "uthmani") {
-      const ids = [...new Set(keys.map(key => Number(key.split(":")[0])))];
+      const ids = [...new Set(verses.map(item => item.surahId))];
       for (const id of ids) loadTajweed(state.surahs[id - 1]);
     }
+    $("bookmarkState").textContent = "♡ حفظ موضع القراءة";
   } catch (error) {
-    $("readerStatus").textContent = error.message || "تعذر تحميل الصفحة.";
+    if (requestId === state.pageRequestId) {
+      $("readerStatus").textContent = error.message || "تعذر تحميل الصفحة.";
+      $("prevSurah").disabled = target <= 1;
+      $("nextSurah").disabled = target >= 604;
+    }
   }
 }
-
 async function selectSurah(id) {
-  const surah = state.surahs.find(s => s.id === Number(id));
+  const surah = state.surahs.find(item => item.id === Number(id));
   if (!surah) return;
-  if (!surah.ayahs.length) {
-    state.selected = surah.id;
-    $("surahSelect").value = String(surah.id);
-    $("currentLocation").textContent = surah.name;
-    renderSurahs();
-    showUnavailable("نص سورة " + surah.name + " غير متاح حاليًا؛ لم يتم إدراج نص بديل.");
-    return;
-  }
+  stopPractice();
   if (state.selected !== surah.id) stopRecitation();
   state.selected = surah.id;
   $("surahSelect").value = String(surah.id);
-  stopPractice();
-  state.practiceAyah = 1;
-  preparePracticeAyah();
+  $("currentLocation").textContent = surah.name;
+  $("readerStatus").textContent = "جارٍ فتح سورة " + surah.name + "…";
+  $("readingContent").innerHTML = '<div class="loading-state"><div class="loading-symbol">۞</div><h3>سورة ' + surah.name + '</h3><p>جارٍ تحميل النص والتحقق من ترتيب الآيات…</p></div>';
   try {
-    const response = await fetch("https://api.quran.com/api/v4/verses/by_chapter/" + surah.id + "?fields=page_number&per_page=1");
-    if (!response.ok) throw new Error("تعذر تحديد صفحة بداية السورة.");
-    const payload = await response.json();
-    const page = Number(payload.verses?.[0]?.page_number);
-    if (!Number.isInteger(page) || page < 1 || page > 604) throw new Error("ترقيم صفحات السورة غير متاح.");
-    await loadMushafPage(page);
+    await ensureSurahLoaded(surah);
+    state.practiceAyah = 1;
+    preparePracticeAyah();
+    const firstPage = surah.ayahs[0]?.pageNumber;
+    if (!Number.isInteger(firstPage)) throw new Error("بيانات صفحة بداية السورة غير متاحة.");
+    await loadMushafPage(firstPage);
   } catch (error) {
-    $("readerStatus").textContent = error.message || "تعذر فتح السورة.";
+    showUnavailable(error.message || "تعذر تحميل سورة " + surah.name + ".");
   }
 }
-
-async function loadQuran(preferredSurah = null) {
-  try {
-    const response = await fetch(DATA_URLS[state.script], { cache: "no-store" });
-    if (!response.ok) throw new Error("ملف " + DATA_URLS[state.script] + " غير موجود في المستودع.");
-    const raw = await response.text();
-    state.surahs = parseCorpus(raw);
-    renderSurahs();
-    $("readerStatus").textContent = "تم التحقق من 114 سورة و6236 آية";
-    let saved = preferredSurah || 1;
-    if (!preferredSurah) {
-      try { const storedRaw = localStorage.getItem("tajweed-bookmark"); const stored = JSON.parse(storedRaw || "null"); if (stored && Number.isInteger(stored.surah) && stored.surah >= 1 && stored.surah <= 114) saved = stored.surah; else if (Number.isInteger(Number(storedRaw)) && Number(storedRaw) >= 1 && Number(storedRaw) <= 114) saved = Number(storedRaw); } catch {}
-    }
-    selectSurah(saved);
-  } catch (error) {
-    state.surahs = SURAH_NAMES.map((name, index) => ({
-      id: index + 1, name, verses: EXPECTED_AYAHS[index], ayahs: []
-    }));
-    renderSurahs();
-    showUnavailable(error.message || "تعذر تحميل ملف المصحف.");
-  }
-}
-
-$("searchInput").addEventListener("input", event => {
-  state.query = event.target.value.trim();
+async function loadQuran() {
+  state.surahs = SURAH_NAMES.map((name, index) => ({
+    id: index + 1, name, verses: EXPECTED_AYAHS[index], ayahs: []
+  }));
   renderSurahs();
-});
-$("surahSelect").addEventListener("change", event => selectSurah(event.target.value));
-$("scriptSelect").addEventListener("change", async event => {
-  const nextScript = event.target.value === "simple" ? "simple" : "uthmani";
-  if (nextScript === state.script) return;
-  const previousSurah = state.selected || 1;
-  state.script = nextScript;
-  state.tajweedEnabled = false;
-  $("tajweedToggle").checked = false;
-  $("tajweedToggle").disabled = nextScript === "simple";
-  $("tajweedLegend").hidden = true;
-  $("tajweedStatus").textContent = nextScript === "simple"
-    ? "الرسم المبسط لا يدعم ألوان التجويد في هذه النسخة."
-    : "يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.";
-  await loadQuran(previousSurah);
-});
+  $("readerStatus").textContent = "جاهز لتحميل المصحف من مصدره النصي.";
+  let bookmark = null;
+  try { bookmark = JSON.parse(localStorage.getItem("tajweed-bookmark") || "null"); } catch {}
+  const savedSurah = Number(bookmark?.surah) || 1;
+  await selectSurah(Math.min(114, Math.max(1, savedSurah)));
+  if (Number.isInteger(Number(bookmark?.page)) && bookmark.page >= 1 && bookmark.page <= 604) {
+    await loadMushafPage(bookmark.page);
+  }
+}
+
 function setTheme(dark) {
   document.body.classList.toggle("dark", dark);
   $("themeToggle").textContent = dark ? "☀" : "◐";
@@ -361,6 +383,8 @@ $("prevSurah").textContent = "الصفحة السابقة";
 $("nextSurah").textContent = "الصفحة التالية";
 $("prevSurah").addEventListener("click", () => state.pageNumber > 1 && loadMushafPage(state.pageNumber - 1));
 $("nextSurah").addEventListener("click", () => state.pageNumber < 604 && loadMushafPage(state.pageNumber + 1));
+$("goToPage").addEventListener("click", () => loadMushafPage($("pageJump").value));
+$("pageJump").addEventListener("keydown", event => { if (event.key === "Enter") loadMushafPage($("pageJump").value); });
 
 function normalizeArabicWord(word) {
   return String(word || "").normalize("NFKC").replace(/[\u064B-\u065F\u0670\u0640]/g, "").replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ؤ/g, "و").replace(/ئ/g, "ي").replace(/[^\u0621-\u064A]/g, "");
@@ -635,7 +659,9 @@ function stopRecitation() {
 }
 async function playAyah(number) {
   const surah = state.surahs.find(item => item.id === state.selected);
-  if (!surah || !surah.ayahs.some(item => item.number === Number(number))) return;
+  if (!surah) return;
+  try { await ensureSurahLoaded(surah); } catch (error) { updateAudioStatus(error.message || "تعذر تحميل الآية."); return; }
+  if (!surah.ayahs.some(item => item.number === Number(number))) return;
   const audio = $("recitationAudio");
   state.audioAyah = Number(number); state.audioSurah = surah.id;
   if (state.practiceAyah !== Number(number)) { stopPractice(); state.practiceAyah = Number(number); preparePracticeAyah(); }
@@ -679,3 +705,4 @@ $("recitationAudio").addEventListener("pause", () => {
   if (!$("recitationAudio").ended && state.audioAyah) $("playSelectedAyah").textContent = "متابعة الآية";
 });
 loadQuran();
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(() => {}));
