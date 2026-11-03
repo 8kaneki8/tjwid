@@ -19,19 +19,10 @@
   </header>
 
   <main>
-    <section class="workspace-intro" aria-label="مساحة القراءة">
-      <div>
-        <p class="eyebrow">السَّلَامُ عَلَيْكَ وَرَحْمَةُ اللَّهِ</p>
-        <h1>مساحة هادئة لوردك اليومي</h1>
-        <p>اقرأ بتدبّر، استمع للآيات، ثم اختبر حفظك بالتسميع.</p>
-      </div>
-      <div class="intro-mark" aria-hidden="true">۞</div>
-    </section>
-
     <section class="reader-section" id="reader">
-      <div class="section-heading"><div><p class="eyebrow">المصحف الشريف</p><h2>المصحف الشريف</h2></div><span class="riwaya">رواية حفص عن عاصم · ١١٤ سورة</span></div>
+      <div class="section-heading"><div><p class="eyebrow">المصحف الشريف</p><h2>اقرأ صفحةً صفحة</h2></div><span class="riwaya">رواية حفص عن عاصم · ١١٤ سورة</span></div>
       <div class="reader-tools">
-        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث في السور أو الآيات…" autocomplete="off"></label>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن سورة أو آية…" autocomplete="off"></label>
         <label class="select-wrap"><span class="sr-only">اختر السورة</span><select id="surahSelect"><option value="">اختر السورة</option></select></label>
         <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
       </div>
@@ -40,11 +31,11 @@
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
           </div>
-          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>السابق</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>التالي</button></div>
+          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>الصفحة السابقة</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>الصفحة التالية</button></div>
         </article>
       </div>
       <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
