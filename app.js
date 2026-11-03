@@ -437,12 +437,24 @@ function startPractice() {
   $("startPractice").disabled = true;
   $("stopPractice").disabled = false;
   $("practiceStatus").textContent = "استمع الآن… اقرأ الآية بوضوح وبسرعتك الطبيعية.";
+  $("practiceLiveTranscript").textContent = "الميكروفون يعمل…";
   recognition.onresult = event => {
     let finalText = "";
+    let interimText = "";
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      if (event.results[i].isFinal) finalText += event.results[i][0].transcript + " ";
+      const result = event.results[i];
+      if (result.isFinal) {
+        const alternatives = [];
+        for (let j = 1; j < Math.min(result.length, 4); j++) alternatives.push(result[j].transcript);
+        applyPracticeTranscript(result[0].transcript, alternatives);
+        finalText += result[0].transcript + " ";
+      } else {
+        interimText += result[0].transcript + " ";
+      }
     }
-    if (finalText) applyPracticeTranscript(finalText);
+    $("practiceLiveTranscript").textContent = interimText.trim()
+      ? "يلتقط الآن: " + interimText.trim()
+      : (finalText.trim() ? "آخر ما تم التعرف عليه: " + finalText.trim() : "استمع الآن…");
   };
   recognition.onerror = event => {
     const messages = {
