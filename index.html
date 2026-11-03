@@ -39,7 +39,7 @@
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
         <article class="mushaf-panel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
           <div id="readingContent" class="reading-content">
             <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
           </div>
@@ -49,7 +49,7 @@
       <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
         <div class="recitation-heading"><div><p class="eyebrow">استمع وتابع الآية</p><h3>استمع إلى القرآن</h3></div><label class="reciter-select"><span>اختر الشيخ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option><option value="Maher_AlMuaiqly_128kbps">ماهر المعيقلي</option></select></label><button id="toggleRecitationPanel" class="audio-action panel-toggle" type="button" aria-expanded="true" aria-controls="recitationBody">إخفاء المشغل −</button></div>
         <div id="recitationBody" class="recitation-body">
-        <div class="recitation-controls"><button id="prevAyahAudio" class="audio-action" type="button">السابق</button><button id="playSelectedAyah" class="audio-action primary-audio" type="button">تشغيل الآية</button><button id="nextAyahAudio" class="audio-action" type="button">التالي</button><span id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</span></div>
+        <div class="recitation-controls"><button id="playSurahAudio" class="audio-action" type="button">تشغيل السورة كاملة</button><button id="prevAyahAudio" class="audio-action" type="button">السابق</button><button id="playSelectedAyah" class="audio-action primary-audio" type="button">تشغيل الآية</button><button id="nextAyahAudio" class="audio-action" type="button">التالي</button><span id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</span></div>
         <audio id="recitationAudio" controls preload="none"></audio>
         <p class="audio-note">اضغط على أي آية في المصحف للاستماع إليها. ينتقل التحديد تلقائيًا مع كل آية. الصوتيات مستضافة عبر <a href="https://everyayah.com/" target="_blank" rel="noopener noreferrer">EveryAyah</a>.</p>
         </div>
