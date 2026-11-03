@@ -62,7 +62,8 @@
           <label class="practice-check"><input id="practiceBeep" type="checkbox" checked><span>تنبيه صوتي عند اختلاف الكلمة</span></label>
         </div>
         <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ التسميع للآية الأولى.</p></div>
-        <div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
+        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p>
+        <div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button">🎙 ابدأ التسميع</button><button id="stopPractice" class="audio-action" type="button" disabled>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
         <p id="practiceStatus" class="practice-status" role="status">يحتاج الميكروفون إلى إذن منك. يعمل التعرف الصوتي في المتصفحات الداعمة وعلى اتصال آمن HTTPS.</p>
         <p class="practice-disclaimer">ملاحظة: المتصفح يحوّل الصوت إلى نص فقط؛ المطابقة تقديرية وقد يخطئ في الكلمات أو الحركات. هذه ليست شهادة آلية بصحة التجويد أو مخارج الحروف.</p>
       </section>
