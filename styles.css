@@ -399,3 +399,7 @@ body.dark .recitation-panel{background:var(--surface);border-color:var(--accent-
 body.dark .reciter-select select{background:var(--surface);color:var(--ink)}
 @media(max-width:680px){.recitation-panel{padding:16px}.recitation-heading{align-items:flex-start}.reciter-select{width:100%;justify-content:space-between}.reciter-select select{flex:1;max-width:none}.audio-status{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){.ayah{transition:none}}
+.recitation-body[hidden]{display:none}
+.panel-toggle{white-space:nowrap}
+.recitation-heading .panel-toggle{margin-inline-start:auto}
+@media(max-width:680px){.recitation-heading .panel-toggle{width:100%;margin-inline-start:0}}

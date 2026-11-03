@@ -322,6 +322,14 @@ function moveAudioAyah(direction) {
   const next = current + direction; if (next < 1 || next > surah.verses) return;
   playAyah(next);
 }
+const recitationToggle = $("toggleRecitationPanel");
+const recitationBody = $("recitationBody");
+recitationToggle.addEventListener("click", () => {
+  const willOpen = recitationBody.hidden;
+  recitationBody.hidden = !willOpen;
+  recitationToggle.setAttribute("aria-expanded", String(willOpen));
+  recitationToggle.textContent = willOpen ? "إخفاء المشغل −" : "فتح المشغل +";
+});
 $("reciterSelect").addEventListener("change", event => {
   state.reciter = event.target.value;
   if (state.audioAyah && state.audioSurah === state.selected) playAyah(state.audioAyah);
