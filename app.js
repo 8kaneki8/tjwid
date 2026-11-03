@@ -210,6 +210,9 @@ function selectSurah(id) {
   $("nextSurah").disabled = surah.id === 114;
   renderSurahs();
   renderAyahs(surah);
+  stopPractice();
+  state.practiceAyah = 1;
+  preparePracticeAyah();
   if (state.tajweedEnabled && state.script === "uthmani") loadTajweed(surah);
 }
 
