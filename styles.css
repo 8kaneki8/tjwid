@@ -152,3 +152,14 @@ body.dark .ayah.audio-current{background:#254a32;box-shadow:0 0 0 3px #254a32}
 body.dark .word-correct{color:#9be0b3;background:#183b28}
 body.dark .word-wrong{color:#ff9ca5;background:#4a2027}
 body.dark .about-section,body.dark .practice-api-config{background:var(--surface)}
+
+
+/* Theme selector palettes */
+body[data-color-theme="green"]{--accent:#287253;--accent-strong:#1d5b40;--accent-soft:#eaf3ed;--accent-border:#d5e4d9}
+body[data-color-theme="blue"]{--accent:#2867a0;--accent-strong:#1d4f7d;--accent-soft:#eaf2fa;--accent-border:#d4e2f0}
+body[data-color-theme="red"]{--accent:#a64d50;--accent-strong:#81383d;--accent-soft:#f9eeee;--accent-border:#ecd8d8}
+body[data-color-theme="yellow"]{--accent:#9a762c;--accent-strong:#76591d;--accent-soft:#f7f1e2;--accent-border:#e9dfc5}
+body.dark[data-color-theme="green"]{--accent:#8fc5a1;--accent-strong:#a8d4b5;--accent-soft:#23392b;--accent-border:#35513e}
+body.dark[data-color-theme="blue"]{--accent:#8bb9e4;--accent-strong:#a8cbed;--accent-soft:#20354a;--accent-border:#35516a}
+body.dark[data-color-theme="red"]{--accent:#e1a0a1;--accent-strong:#efb6b7;--accent-soft:#43282b;--accent-border:#694044}
+body.dark[data-color-theme="yellow"]{--accent:#d9bd78;--accent-strong:#e7cf96;--accent-soft:#40371f;--accent-border:#665733}
