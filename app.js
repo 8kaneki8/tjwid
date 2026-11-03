@@ -294,9 +294,9 @@ async function loadMushafPage(page) {
     });
     state.pageNumber = target;
     state.pageVerses = verses;
-    recordPageVisit(target);
     state.pageAyahKeys = verses.map(item => item.surahId + ":" + item.number);
     state.selected = verses[0].surahId;
+    recordPageVisit(target);
     $("surahSelect").value = String(state.selected);
     const selectedChapter = state.surahs[state.selected - 1];
     if (state.practiceSurah !== state.selected || !selectedChapter.ayahs.some(item => item.number === state.practiceAyah)) {
