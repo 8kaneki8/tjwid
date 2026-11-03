@@ -514,7 +514,7 @@ function stopPractice(message) {
 async function startPractice() {
   if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
   if (!getAsrApiUrl()) {
-    $("practiceStatus").textContent = "أدخل رابط محرك التسميع الذي نشرته ثم اضغط «حفظ وتجربة الرابط».";
+    $("practiceStatus").textContent = "شغّل خدمة محرك التسميع ثم أدخل رابطها واضغط «حفظ وتجربة الرابط».";
     $("asrApiUrl").focus();
     return;
   }
@@ -551,8 +551,9 @@ $("asrApiUrl").value = (() => {
 })();
 $("saveAsrApiUrl").addEventListener("click", async () => {
   const url = getAsrApiUrl();
-  if (!url.startsWith("https://")) {
-    $("practiceStatus").textContent = "اكتب رابط HTTPS كاملًا لخدمة التسميع.";
+  const localHttp = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(url);
+  if (!url.startsWith("https://") && !localHttp) {
+    $("practiceStatus").textContent = "استخدم رابط HTTPS للخدمة، أو localhost للتجربة على جهازك.";
     return;
   }
   try { localStorage.setItem("tjwid-asr-api-url", url); } catch {}
@@ -564,7 +565,7 @@ $("saveAsrApiUrl").addEventListener("click", async () => {
     if (!response.ok || !health.model_loaded) throw new Error("المحرك لم يكتمل تحميله بعد.");
     $("practiceStatus").textContent = "تم الاتصال بمحرك القرآن بنجاح. يمكنك بدء التسميع.";
   } catch (error) {
-    $("practiceStatus").textContent = error.message || "تعذر الاتصال. تأكد من رابط Space وإعدادات CORS.";
+    $("practiceStatus").textContent = error.message || "تعذر الاتصال. تأكد أن خدمة المحرك تعمل وأن رابطها وإعدادات CORS صحيحان.";
   } finally {
     $("saveAsrApiUrl").disabled = false;
   }
