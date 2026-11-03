@@ -14,7 +14,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecognition: null, practiceIndex: 0, audioAyah: null, audioSurah: null };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, audioAyah: null, audioSurah: null };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -354,7 +354,7 @@ function playPracticeErrorTone() {
 }
 function applyPracticeTranscript(transcript, alternatives = []) {
   const candidates = [transcript, ...alternatives]
-    .map(value => String(value || "").trim().split(/\\s+/).filter(Boolean))
+    .map(value => String(value || "").trim().split(/\s+/).filter(Boolean))
     .filter(words => words.length);
   if (!candidates.length) return;
   // Alternatives are competing hypotheses for the same audio, not extra words.
@@ -412,67 +412,155 @@ function applyPracticeTranscript(transcript, alternatives = []) {
     if (state.practiceIndex >= state.practiceWords.length) stopPractice("انتهى التسميع. راجع الكلمات المعلّمة؛ فقد يؤثر إسقاط كلمة أو دمجها في دقة المطابقة.");
   }
 }
-function stopPractice(message) {
-  if (state.practiceRecognition) {
-    try { state.practiceRecognition.stop(); } catch {}
-    state.practiceRecognition = null;
+const PRACTICE_SEGMENT_MS = 6500;
+
+function getAsrApiUrl() {
+  return String($("asrApiUrl").value || "").trim().replace(/\\/+$/, "");
+}
+
+async function transcribePracticeSegment(session, blob) {
+  const apiUrl = getAsrApiUrl();
+  if (!apiUrl) throw new Error("أدخل رابط محرك التسميع واحفظه أولًا.");
+  const form = new FormData();
+  form.append("audio", blob, "recitation-audio");
+  const response = await fetch(apiUrl + "/v1/transcribe", { method: "POST", body: form });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.detail || "تعذر على محرك التسميع معالجة التسجيل.");
+  const transcript = String(payload.text || "").trim();
+  if (!transcript) {
+    $("practiceLiveTranscript").textContent = "لم يلتقط المحرك كلمات واضحة في هذا الجزء. واصل القراءة أو أعد الآية.";
+    return;
   }
+  $("practiceLiveTranscript").textContent = "تم التعرف: " + transcript;
+  applyPracticeTranscript(transcript);
+}
+
+function finishPracticeSession(session, message) {
+  if (state.practiceRecorder !== session) return;
+  session.stream.getTracks().forEach(track => track.stop());
+  state.practiceRecorder = null;
   $("startPractice").disabled = false;
   $("stopPractice").disabled = true;
   if (message) $("practiceStatus").textContent = message;
 }
-function startPractice() {
-  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!Recognition) {
-    $("practiceStatus").textContent = "متصفحك لا يدعم التعرف على الكلام. جرّب Chrome أو Edge بأحدث إصدار.";
+
+function startPracticeSegment(session) {
+  if (session.stopped || state.practiceRecorder !== session) return;
+  try {
+    const mimeType = ["audio/webm;codecs=opus", "audio/mp4"].find(type =>
+      window.MediaRecorder && MediaRecorder.isTypeSupported(type)
+    );
+    const recorder = mimeType
+      ? new MediaRecorder(session.stream, { mimeType })
+      : new MediaRecorder(session.stream);
+    session.recorder = recorder;
+    session.chunks = [];
+    recorder.ondataavailable = event => {
+      if (event.data && event.data.size) session.chunks.push(event.data);
+    };
+    recorder.onerror = () => stopPractice("حدث خطأ أثناء تسجيل الصوت. تحقق من الميكروفون ثم أعد المحاولة.");
+    recorder.onstop = () => {
+      const blob = new Blob(session.chunks, { type: recorder.mimeType || "audio/webm" });
+      if (blob.size > 700) {
+        session.uploadQueue = session.uploadQueue
+          .then(() => transcribePracticeSegment(session, blob))
+          .catch(error => {
+            $("practiceLiveTranscript").textContent = error.message || "تعذر إرسال التسجيل إلى محرك التسميع.";
+            $("practiceStatus").textContent = "تعذر التعرف على هذا الجزء. تحقق من رابط المحرك واتصال الإنترنت.";
+          });
+      }
+      if (!session.stopped) {
+        startPracticeSegment(session);
+      } else {
+        session.uploadQueue.finally(() => finishPracticeSession(
+          session,
+          session.stopMessage || "تم إيقاف التسميع."
+        ));
+      }
+    };
+    recorder.start();
+    session.timer = setTimeout(() => {
+      if (recorder.state === "recording") recorder.stop();
+    }, PRACTICE_SEGMENT_MS);
+  } catch {
+    stopPractice("تعذر بدء تسجيل الصوت في هذا المتصفح.");
+  }
+}
+
+function stopPractice(message) {
+  const session = state.practiceRecorder;
+  if (!session) {
+    $("startPractice").disabled = false;
+    $("stopPractice").disabled = true;
+    if (message) $("practiceStatus").textContent = message;
     return;
   }
-  if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
-  if (!state.practiceWords.length || state.practiceWords.every(word => word.status !== "pending")) preparePracticeAyah();
-  const recognition = new Recognition();
-  recognition.lang = "ar-SA";
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.maxAlternatives = 4;
-  state.practiceRecognition = recognition;
-  $("startPractice").disabled = true;
-  $("stopPractice").disabled = false;
-  $("practiceStatus").textContent = "استمع الآن… اقرأ الآية بوضوح وبسرعتك الطبيعية.";
-  $("practiceLiveTranscript").textContent = "الميكروفون يعمل…";
-  recognition.onresult = event => {
-    let finalText = "";
-    let interimText = "";
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const result = event.results[i];
-      if (result.isFinal) {
-        const alternatives = [];
-        for (let j = 1; j < Math.min(result.length, 4); j++) alternatives.push(result[j].transcript);
-        applyPracticeTranscript(result[0].transcript, alternatives);
-        finalText += result[0].transcript + " ";
-      } else {
-        interimText += result[0].transcript + " ";
-      }
-    }
-    $("practiceLiveTranscript").textContent = interimText.trim()
-      ? "يلتقط الآن: " + interimText.trim()
-      : (finalText.trim() ? "آخر ما تم التعرف عليه: " + finalText.trim() : "استمع الآن…");
-  };
-  recognition.onerror = event => {
-    const messages = {
-      "not-allowed": "لم يتم السماح باستخدام الميكروفون. افتح إعدادات الموقع واسمح باستخدام الميكروفون.",
-      "service-not-allowed": "خدمة التعرف على الكلام محظورة في المتصفح أو الشبكة الحالية.",
-      "network": "تعذر الاتصال بخدمة التعرف على الكلام. تأكد من الإنترنت، وأوقف مؤقتًا VPN أو مانع الإعلانات إن كان يحجب الخدمة، ثم اضغط «ابدأ التسميع» للمحاولة مجددًا.",
-      "no-speech": "لم نلتقط صوتًا واضحًا. تأكد من اختيار الميكروفون الصحيح وتحدث بالقرب منه.",
-      "audio-capture": "لم يتم العثور على ميكروفون متاح. تحقق من توصيله واختياره في إعدادات المتصفح.",
-      "language-not-supported": "خدمة المتصفح لا تدعم التعرف على العربية في الوقت الحالي."
-    };
-    stopPractice(messages[event.error] || "تعذر تشغيل التعرف الصوتي. أعد المحاولة وتحقق من أذونات الميكروفون والاتصال.");
-  };
-  recognition.onend = () => {
-    if (state.practiceRecognition === recognition) stopPractice("توقف الاستماع. يمكنك بدء التسميع مجددًا لإكمال الكلمات المتبقية.");
-  };
-  try { recognition.start(); } catch { stopPractice("تعذر تشغيل الميكروفون. أعد المحاولة."); }
+  session.stopped = true;
+  session.stopMessage = message || "تم إيقاف التسميع.";
+  clearTimeout(session.timer);
+  $("stopPractice").disabled = true;
+  $("practiceStatus").textContent = "جارٍ إرسال آخر جزء من التسجيل ومراجعته…";
+  if (session.recorder && session.recorder.state === "recording") {
+    session.recorder.stop();
+  } else {
+    session.uploadQueue.finally(() => finishPracticeSession(session, session.stopMessage));
+  }
 }
+
+async function startPractice() {
+  if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
+  if (!getAsrApiUrl()) {
+    $("practiceStatus").textContent = "أدخل رابط محرك التسميع الذي نشرته ثم اضغط «حفظ وتجربة الرابط».";
+    $("asrApiUrl").focus();
+    return;
+  }
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+    $("practiceStatus").textContent = "المتصفح لا يدعم تسجيل الصوت المطلوب. جرّب Chrome أو Edge حديثًا عبر HTTPS.";
+    return;
+  }
+  if (state.practiceRecorder) return;
+  if (!state.practiceWords.length || state.practiceWords.every(word => word.status !== "pending")) preparePracticeAyah();
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+    });
+    const session = { stream, recorder: null, chunks: [], timer: null, stopped: false, stopMessage: "", uploadQueue: Promise.resolve() };
+    state.practiceRecorder = session;
+    $("startPractice").disabled = true;
+    $("stopPractice").disabled = false;
+    $("practiceStatus").textContent = "الميكروفون يعمل. اقرأ الآية؛ ستصل المقاطع تباعًا إلى محرك القرآن.";
+    $("practiceLiveTranscript").textContent = "بانتظار أول نتيجة من المحرك القرآني…";
+    startPracticeSegment(session);
+  } catch (error) {
+    $("practiceStatus").textContent = error?.name === "NotAllowedError"
+      ? "لم تسمح باستخدام الميكروفون. اسمح للموقع بالوصول إليه من إعدادات المتصفح."
+      : "تعذر فتح الميكروفون. تحقق من توصيله وصلاحيات المتصفح.";
+  }
+}
+
+$("asrApiUrl").value = (() => {
+  try { return localStorage.getItem("tjwid-asr-api-url") || ""; } catch { return ""; }
+})();
+$("saveAsrApiUrl").addEventListener("click", async () => {
+  const url = getAsrApiUrl();
+  if (!/^https:\\/\\//i.test(url)) {
+    $("practiceStatus").textContent = "اكتب رابط HTTPS كاملًا لخدمة التسميع.";
+    return;
+  }
+  try { localStorage.setItem("tjwid-asr-api-url", url); } catch {}
+  $("saveAsrApiUrl").disabled = true;
+  $("practiceStatus").textContent = "جارٍ اختبار الاتصال بمحرك التسميع…";
+  try {
+    const response = await fetch(url + "/v1/health");
+    const health = await response.json();
+    if (!response.ok || !health.model_loaded) throw new Error("المحرك لم يكتمل تحميله بعد.");
+    $("practiceStatus").textContent = "تم الاتصال بمحرك القرآن بنجاح. يمكنك بدء التسميع.";
+  } catch (error) {
+    $("practiceStatus").textContent = error.message || "تعذر الاتصال. تأكد من رابط Space وإعدادات CORS.";
+  } finally {
+    $("saveAsrApiUrl").disabled = false;
+  }
+});
 $("startPractice").addEventListener("click", startPractice);
 $("stopPractice").addEventListener("click", () => stopPractice("تم إيقاف التسميع."));
 $("hidePracticeAyah").addEventListener("change", renderPracticeWords);
