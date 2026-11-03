@@ -45,6 +45,16 @@
         <p class="audio-note">اضغط على أي آية في المصحف للاستماع إليها. ينتقل التحديد تلقائيًا مع كل آية. الصوتيات مستضافة عبر <a href="https://everyayah.com/" target="_blank" rel="noopener noreferrer">EveryAyah</a>.</p>
         </div>
       </section>
+      <div class="reader-layout">
+        <aside class="surah-panel"><div class="panel-title"><h3>فهرس السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
+        <article class="mushaf-panel" aria-live="polite">
+          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
+          <div id="readingContent" class="reading-content">
+            <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
+          </div>
+          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>السابق</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>التالي</button></div>
+        </article>
+      </div>
       <section class="practice-panel" id="practice" aria-labelledby="practiceTitle">
         <div class="practice-heading"><div><p class="eyebrow">تدرّب على التلاوة</p><h3 id="practiceTitle">التسميع والمتابعة</h3><p>اقرأ الآية بصوتك، وتابع الكلمات التي التقطها التعرّف الصوتي.</p></div><span class="practice-chip">نسخة تجريبية</span></div>
         <div class="practice-options">
@@ -56,16 +66,6 @@
         <p id="practiceStatus" class="practice-status" role="status">يحتاج الميكروفون إلى إذن منك. يعمل التعرف الصوتي في المتصفحات الداعمة وعلى اتصال آمن HTTPS.</p>
         <p class="practice-disclaimer">ملاحظة: المتصفح يحوّل الصوت إلى نص فقط؛ المطابقة تقديرية وقد يخطئ في الكلمات أو الحركات. هذه ليست شهادة آلية بصحة التجويد أو مخارج الحروف.</p>
       </section>
-      <div class="reader-layout">
-        <aside class="surah-panel"><div class="panel-title"><h3>فهرس السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
-        <article class="mushaf-panel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">المصحف الشريف</span><span class="mushaf-edition">رسم عثماني · حفص</span><button class="bookmark" id="bookmarkState" type="button">♡ حفظ موضع القراءة</button></div>
-          <div id="readingContent" class="reading-content">
-            <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
-          </div>
-          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>السابق</button><span id="readerStatus">بانتظار بيانات المصحف</span><button id="nextSurah" class="secondary-button" disabled>التالي</button></div>
-        </article>
-      </div>
     </section>
 
     <section class="about-section" id="about"><div class="about-icon">۞</div><div><p class="eyebrow">أمانة النص</p><h2>القرآن يُنقل كما أُنزل</h2><p>نعتمد نصًا موثقًا برواية حفص عن عاصم، ونحافظ عليه دون إعادة صياغة أو تعديل. لن تُفعّل القراءة الكاملة حتى تجتاز بيانات النص اختبارات التحقق.</p><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني: مشروع تنزيل ↗</a></div></section>
