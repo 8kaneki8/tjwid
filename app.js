@@ -415,7 +415,9 @@ function applyPracticeTranscript(transcript, alternatives = []) {
 const PRACTICE_SEGMENT_MS = 6500;
 
 function getAsrApiUrl() {
-  let url = String($("asrApiUrl").value || "").trim();\n  while (url.endsWith("/")) url = url.slice(0, -1);\n  return url;
+  let url = String($("asrApiUrl").value || "").trim();
+  while (url.endsWith("/")) url = url.slice(0, -1);
+  return url;
 }
 
 async function transcribePracticeSegment(session, blob) {
@@ -568,7 +570,8 @@ $("resetPractice").addEventListener("click", () => {
   stopPractice();
   preparePracticeAyah();
   $("practiceLiveTranscript").textContent = "تمت إعادة الآية من البداية.";
-});\n$("nextPracticeAyah").addEventListener("click", () => {
+});
+$("nextPracticeAyah").addEventListener("click", () => {
   const surah = state.surahs.find(item => item.id === state.selected);
   if (!surah) return;
   stopPractice();
