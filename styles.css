@@ -206,3 +206,11 @@ body.dark[data-color-theme="yellow"]{--accent:#d9bd78;--accent-strong:#e7cf96;--
  .tool-section-heading{align-items:flex-start;flex-direction:column;gap:2px}
  .tajweed-tools{padding:12px}
 }
+
+/* Accessibility and reading-flow polish */
+.skip-link{position:fixed;z-index:100;top:10px;right:12px;padding:10px 15px;border-radius:10px;background:var(--accent-strong);color:#fff;text-decoration:none;font-weight:700;transform:translateY(-160%);transition:transform .18s}
+.skip-link:focus{transform:translateY(0)}
+.hero-secondary[hidden]{display:none}
+.hero-actions{align-items:center}
+.surah-list:focus-within{outline:2px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:3px;border-radius:10px}
+@media(max-width:760px){.hero-actions{gap:8px}.hero-primary,.hero-secondary{min-height:41px;padding-inline:13px;font-size:11px}.skip-link{top:6px;right:7px}}
