@@ -449,3 +449,10 @@ body.dark .word-wrong{color:#ff9ca5;background:#4a2027}
 .word-review{color:#9a6700;background:#fff4d6;text-decoration:underline dotted #c58b18;text-underline-offset:5px}
 body.dark .word-review{color:#f3cf77;background:#493b1b}
 .practice-actions .primary-audio{min-width:150px}
+
+.practice-api-config{position:relative;margin-top:14px;padding:13px;border:1px solid var(--accent-border);border-radius:12px;background:var(--surface)}
+.practice-api-config>label{display:block;margin-bottom:7px;color:var(--ink);font-size:12px;font-weight:700}
+.practice-api-row{display:flex;gap:8px;align-items:center}
+.practice-api-row input{min-width:0;flex:1;height:42px;padding:0 11px;border:1px solid var(--accent-border);border-radius:9px;background:var(--paper);color:var(--ink);font:inherit;font-size:12px;direction:ltr;text-align:left}
+.practice-api-config small{display:block;margin-top:7px;color:var(--muted);font-size:11px;line-height:1.7}
+@media(max-width:600px){.practice-api-row{align-items:stretch;flex-direction:column}.practice-api-row button{width:100%}}
