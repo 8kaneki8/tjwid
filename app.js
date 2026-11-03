@@ -509,7 +509,7 @@ function stopPractice(message) {
   }
 }
 
-async function startPractice() {
+async async function startPractice() {
   if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
   if (!getAsrApiUrl()) {
     $("practiceStatus").textContent = "أدخل رابط محرك التسميع الذي نشرته ثم اضغط «حفظ وتجربة الرابط».";
@@ -530,6 +530,8 @@ async function startPractice() {
     state.practiceRecorder = session;
     $("startPractice").disabled = true;
     $("stopPractice").disabled = false;
+    $("resetPractice").disabled = true;
+    $("nextPracticeAyah").disabled = true;
     $("practiceStatus").textContent = "الميكروفون يعمل. اقرأ الآية؛ ستصل المقاطع تباعًا إلى محرك القرآن.";
     $("practiceLiveTranscript").textContent = "بانتظار أول نتيجة من المحرك القرآني…";
     startPracticeSegment(session);
