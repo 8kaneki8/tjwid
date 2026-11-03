@@ -163,3 +163,69 @@ body.dark[data-color-theme="green"]{--accent:#8fc5a1;--accent-strong:#a8d4b5;--a
 body.dark[data-color-theme="blue"]{--accent:#8bb9e4;--accent-strong:#a8cbed;--accent-soft:#20354a;--accent-border:#35516a}
 body.dark[data-color-theme="red"]{--accent:#e1a0a1;--accent-strong:#efb6b7;--accent-soft:#43282b;--accent-border:#694044}
 body.dark[data-color-theme="yellow"]{--accent:#d9bd78;--accent-strong:#e7cf96;--accent-soft:#40371f;--accent-border:#665733}
+
+
+/* Reading-first Madani page layout */
+.reader-section{max-width:1480px}
+.section-heading{margin-bottom:20px}
+.section-heading h2{font-size:25px;letter-spacing:-.4px}
+.reader-layout{grid-template-columns:205px minmax(0,1fr);gap:22px}
+.surah-panel{border-radius:12px;box-shadow:none;background:var(--surface)}
+.mushaf-panel{border:0;background:transparent;padding:0;min-height:0;box-shadow:none}
+.mushaf-top{max-width:850px;margin:0 auto;padding:0 4px 12px;border-bottom:0}
+.reading-content{
+  position:relative;isolation:isolate;
+  width:min(100%,850px);min-height:790px;margin:0 auto 18px;
+  padding:42px clamp(25px,6vw,76px) 50px;
+  overflow:hidden;
+  border:1px solid #d8cdb5;border-radius:3px;
+  background:#fffdf6;color:#25251f;
+  box-shadow:0 14px 38px rgba(57,48,29,.10),0 2px 5px rgba(57,48,29,.06);
+}
+.reading-content:before{
+  content:"";position:absolute;inset:12px;z-index:-1;
+  border:1px solid #e8dfcd;pointer-events:none;
+}
+.reading-content:after{
+  content:"۞";position:absolute;top:17px;left:50%;transform:translateX(-50%);
+  color:#b49a68;font-family:"Amiri Quran",serif;font-size:19px;opacity:.8;
+}
+.surah-heading{padding:19px 0 14px;margin:0 0 18px;border:0}
+.surah-heading h3{color:#735d34;font-size:25px}
+.surah-heading p{color:#8c8069}
+.page-basmala{margin:14px 0 18px;text-align:center;color:#403b30;font-family:"Amiri Quran",serif;font-size:27px}
+.ayah-text{
+  max-width:100%;color:#28271f;text-align:justify;text-align-last:center;
+  font-size:clamp(25px,2.25vw,31px);line-height:2.45;word-spacing:4px;
+}
+.ayah{border-radius:4px}
+.ayah:hover{background:#f2eddf}
+.ayah.audio-current{background:#e9e2cf;box-shadow:0 0 0 3px #e9e2cf}
+.ayah-marker{color:#967a43;font-size:.68em}
+.reader-footer{max-width:850px;margin:0 auto;padding:14px 4px 0;border-top:1px solid var(--line)}
+.reader-footer .secondary-button{min-width:125px}
+#readerStatus{font-variant-numeric:tabular-nums}
+.tajweed-tools{box-shadow:none}
+.recitation-panel,.practice-panel{border-radius:12px}
+@media(max-width:850px){
+ .reader-layout{grid-template-columns:1fr}
+ .surah-panel{position:static;order:2;max-height:220px}
+ .mushaf-panel{order:1}
+ .reading-content{min-height:680px;padding:36px 30px 42px}
+}
+@media(max-width:680px){
+ .section-heading h2{font-size:20px}
+ .reader-layout{gap:12px}
+ .reading-content{min-height:610px;padding:34px 22px 38px;margin-bottom:12px}
+ .reading-content:before{inset:8px}
+ .ayah-text{font-size:24px;line-height:2.25;word-spacing:1px}
+ .surah-panel{max-height:190px}
+ .reader-footer{gap:6px}
+ .reader-footer .secondary-button{min-width:0;padding:8px 9px;font-size:10px}
+ .reader-footer span{flex:1}
+}
+body.dark .reading-content{background:#f8f4e9;color:#28271f;border-color:#d8cdb5}
+body.dark .reading-content:before{border-color:#e8dfcd}
+body.dark .ayah-text{color:#28271f}
+body.dark .ayah-marker{color:#967a43}
+body.dark .ayah.audio-current{background:#e9e2cf;box-shadow:0 0 0 3px #e9e2cf}
