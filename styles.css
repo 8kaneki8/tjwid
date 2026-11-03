@@ -181,3 +181,28 @@ body.dark[data-color-theme="yellow"]{--accent:#d9bd78;--accent-strong:#e7cf96;--
 .progress-grid{display:grid;grid-template-columns:1fr 1fr minmax(220px,1.6fr);gap:12px}.progress-stat,.goal-stat{min-height:82px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}.progress-stat strong{display:block;margin-top:4px;color:var(--accent);font-size:25px;font-weight:700}.progress-stat small{display:block}.goal-stat label{display:flex;align-items:center;gap:6px;color:var(--ink);font-size:11px}.goal-stat input{width:48px;padding:5px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);text-align:center}.goal-stat progress{display:block;width:100%;height:8px;margin:9px 0 4px;accent-color:var(--accent)}
 .bookmark-select select,.repeat-select select{max-width:170px;padding:7px 9px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);font-size:10px}.bookmark-select{display:flex;align-items:center}.repeat-select{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px}
 @media(max-width:760px){.progress-panel{margin:12px 12px 0;padding:15px}.progress-grid{grid-template-columns:1fr 1fr}.goal-stat{grid-column:1/-1}.progress-heading{align-items:flex-start;flex-direction:column}.mushaf-top .bookmark-select{flex:1}.bookmark-select select{max-width:100%;width:100%}.repeat-select{width:100%;justify-content:space-between}.repeat-select select{flex:1;max-width:none}}
+
+/* Clear page hierarchy and responsive navigation */
+.top-nav{min-width:0;white-space:nowrap}
+.top-nav a{white-space:nowrap}
+.tajweed-tools{margin:14px 0 18px;padding:15px 17px;border:1px solid var(--accent-border);border-radius:14px;background:linear-gradient(135deg,var(--surface),var(--accent-soft))}
+.tool-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.tool-section-heading strong{color:var(--ink);font-size:13px}
+.tool-section-heading span{color:var(--muted);font-size:10px}
+.tajweed-tools .tajweed-status{margin-bottom:0}
+.learning-section{max-width:1440px;margin:0 auto;padding:0 clamp(16px,4vw,46px) 52px;display:grid;gap:18px}
+.learning-section .recitation-panel,.learning-section .practice-panel{margin:0;scroll-margin-top:92px}
+.learning-section .recitation-panel,.learning-section .practice-panel{border:1px solid var(--line);border-radius:17px;background:var(--surface);box-shadow:var(--shadow)}
+.recitation-heading,.practice-heading{padding-bottom:12px;border-bottom:1px solid var(--line)}
+.practice-panel .practice-target{margin-top:8px}
+.top-nav a.active{position:relative}
+.top-nav a.active:after{content:"";position:absolute;inset:auto 14px 3px;height:2px;border-radius:2px;background:var(--accent)}
+@media(max-width:760px){
+ .topbar{gap:7px}
+ .top-nav{flex:1;max-width:55vw;overflow-x:auto;scrollbar-width:none}
+ .top-nav::-webkit-scrollbar{display:none}
+ .top-nav a{padding:7px 8px;font-size:9px}
+ .learning-section{padding:0 12px 34px;gap:12px}
+ .tool-section-heading{align-items:flex-start;flex-direction:column;gap:2px}
+ .tajweed-tools{padding:12px}
+}

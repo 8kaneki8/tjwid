@@ -432,7 +432,7 @@ document.addEventListener("keydown", event => {
   if (event.key === "PageDown" && state.pageNumber < 604) { event.preventDefault(); loadMushafPage(state.pageNumber + 1); }
   if (event.key === "PageUp" && state.pageNumber > 1) { event.preventDefault(); loadMushafPage(state.pageNumber - 1); }
 });
-const navSections = ["home", "reader", "recitation", "practice"].map(id => $(id)).filter(Boolean);
+const navSections = ["home", "reader", "tajweedTools", "recitation", "practice"].map(id => $(id)).filter(Boolean);
 if ("IntersectionObserver" in window) {
   const navObserver = new IntersectionObserver(entries => {
     const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];

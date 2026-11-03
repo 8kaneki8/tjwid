@@ -17,7 +17,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
-    <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#recitation">الاستماع</a><a href="#practice">التسميع</a></nav>
+    <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#tajweedTools">التجويد</a><a href="#recitation">الاستماع</a><a href="#practice">الحفظ والتدريب</a></nav>
     <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green" selected>أخضر</option><option value="blue">أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
   </header>
 
@@ -42,7 +42,7 @@
         <label class="select-wrap"><span class="sr-only">اختر السورة</span><select id="surahSelect"><option value="">اختر السورة</option></select></label>
         <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
       </div>
-      <div class="tajweed-tools"><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
+      <div class="tajweed-tools" id="tajweedTools"><div class="tool-section-heading"><strong>أدوات التجويد</strong><span>تعلّم الأحكام أثناء القراءة</span></div><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
 
       <div class="reader-layout">
         <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
@@ -54,6 +54,9 @@
           <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>‹ الصفحة السابقة</button><label class="page-jump">اذهب إلى <input id="pageJump" type="number" min="1" max="604" value="1" inputmode="numeric" aria-label="رقم الصفحة"> <span>من ٦٠٤</span></label><button id="goToPage" class="secondary-button">انتقال</button><span id="readerStatus">جارٍ تجهيز المصحف</span><button id="nextSurah" class="secondary-button" disabled>الصفحة التالية ›</button></div>
         </article>
       </div>
+    </section>
+
+    <section class="learning-section" aria-label="أدوات الاستماع والتدريب">
       <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
         <div class="recitation-heading"><div><p class="eyebrow">استمع وتابع الآية</p><h3>استمع إلى القرآن</h3></div><label class="reciter-select"><span>اختر الشيخ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option><option value="Maher_AlMuaiqly_128kbps">ماهر المعيقلي</option></select></label><button id="toggleRecitationPanel" class="audio-action panel-toggle" type="button" aria-expanded="true" aria-controls="recitationBody">إخفاء المشغل −</button></div>
         <div id="recitationBody" class="recitation-body">
