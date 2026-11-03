@@ -2,7 +2,7 @@ name: Validate Quran ASR integration
 
 on:
   push:
-    branches: [feat/quran-asr-engine, feat/tajweed-quran-site, feat/ultimate-quran-experience]
+    branches: [feat/quran-asr-engine, feat/tajweed-quran-site, feat/ultimate-quran-experience, feat/complete-quran-learning-suite-20261103]
   pull_request:
     branches: [feat/tajweed-quran-site]
 
@@ -23,5 +23,7 @@ jobs:
         run: node --check service-worker.js
       - name: Validate web app manifest
         run: python -c "import json; json.load(open('manifest.webmanifest', encoding='utf-8'))"
+      - name: Check HTML and JavaScript integration
+        run: python tests/check_site.py
       - name: Check ASR API Python syntax
         run: python -m py_compile asr-api/app.py
