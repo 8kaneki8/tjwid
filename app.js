@@ -1,4 +1,3 @@
-const DATA_URLS = { uthmani: "./data/quran-uthmani.txt", simple: "./data/quran-simple.txt" };
 const SURAH_NAMES = [
 "الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس",
 "هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه",
@@ -14,7 +13,7 @@ const SURAH_NAMES = [
 "المسد","الإخلاص","الفلق","الناس"
 ];
 const EXPECTED_AYAHS = [7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
-const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
+const state = { surahs: [], selected: null, query: "", script: "uthmani", tajweedEnabled: false, tajweedBySurah: new Map(), tajweedLoading: new Set(), reciter: "Minshawy_Murattal_128kbps", practiceAyah: 1, practiceWords: [], practiceRecorder: null, practiceIndex: 0, fontSize: 33, audioAyah: null, audioSurah: null, pageNumber: 1, pageAyahKeys: [], pageVerses: [], pageRequestId: 0 };
 const $ = id => document.getElementById(id);
 
 function showUnavailable(message) {
@@ -224,7 +223,6 @@ function renderAyahs() {
       span.addEventListener("click", () => {
         state.selected = group.surah.id;
         $("surahSelect").value = String(group.surah.id);
-        state.practiceAyah = ayah.number;
         renderSurahs();
         playAyah(ayah.number);
       });
@@ -251,6 +249,7 @@ function renderAyahs() {
   $("readerStatus").textContent = first && last
     ? "صفحة " + state.pageNumber + " من 604 · " + state.pageVerses.length + " آية"
     : "لا توجد آيات لهذه الصفحة";
+  $("readingContent").style.setProperty("--quran-font-size", state.fontSize + "px");
   $("prevSurah").disabled = state.pageNumber <= 1;
   $("nextSurah").disabled = state.pageNumber >= 604;
   $("pageJump").value = String(state.pageNumber);
@@ -292,6 +291,11 @@ async function loadMushafPage(page) {
     state.pageAyahKeys = verses.map(item => item.surahId + ":" + item.number);
     state.selected = verses[0].surahId;
     $("surahSelect").value = String(state.selected);
+    const selectedChapter = state.surahs[state.selected - 1];
+    if (!selectedChapter.ayahs.some(item => item.number === state.practiceAyah)) {
+      state.practiceAyah = verses.find(item => item.surahId === state.selected)?.number || 1;
+      preparePracticeAyah();
+    }
     renderSurahs();
     renderAyahs();
     if (state.tajweedEnabled && state.script === "uthmani") {
@@ -353,15 +357,46 @@ try { setTheme(localStorage.getItem("tajweed-theme") === "dark"); } catch { setT
 
 const COLOR_THEMES = new Set(["green", "blue", "red", "yellow"]);
 function setColorTheme(theme) {
-  const selected = COLOR_THEMES.has(theme) ? theme : "blue";
+  const selected = COLOR_THEMES.has(theme) ? theme : "green";
   document.body.dataset.colorTheme = selected;
   $("colorThemeSelect").value = selected;
   try { localStorage.setItem("tajweed-color-theme", selected); } catch {}
 }
-try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "blue"); }
-catch { setColorTheme("blue"); }
+try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "green"); }
+catch { setColorTheme("green"); }
 $("colorThemeSelect").addEventListener("change", event => setColorTheme(event.target.value));
+
 $("themeToggle").addEventListener("click", () => setTheme(!document.body.classList.contains("dark")));
+function setReaderFontSize(size) {
+  state.fontSize = Math.max(24, Math.min(42, Number(size) || 33));
+  $("readingContent").style.setProperty("--quran-font-size", state.fontSize + "px");
+  try { localStorage.setItem("tajweed-reader-font-size", String(state.fontSize)); } catch {}
+}
+try { setReaderFontSize(Number(localStorage.getItem("tajweed-reader-font-size")) || 33); } catch { setReaderFontSize(33); }
+$("fontDecrease").addEventListener("click", () => setReaderFontSize(state.fontSize - 2));
+$("fontIncrease").addEventListener("click", () => setReaderFontSize(state.fontSize + 2));
+$("fullscreenReader").addEventListener("click", async () => {
+  try {
+    if (!document.fullscreenElement) await $("mushafPanel").requestFullscreen();
+    else await document.exitFullscreen();
+  } catch { $("readerStatus").textContent = "وضع ملء الشاشة غير متاح في هذا المتصفح."; }
+});
+$("playSurahAudio").addEventListener("click", () => playAyah(1));
+document.addEventListener("keydown", event => {
+  if (event.altKey || event.ctrlKey || event.metaKey) return;
+  if (["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(document.activeElement?.tagName)) return;
+  if (event.key === "PageDown" && state.pageNumber < 604) { event.preventDefault(); loadMushafPage(state.pageNumber + 1); }
+  if (event.key === "PageUp" && state.pageNumber > 1) { event.preventDefault(); loadMushafPage(state.pageNumber - 1); }
+});
+const navSections = ["home", "reader", "recitation", "practice"].map(id => $(id)).filter(Boolean);
+if ("IntersectionObserver" in window) {
+  const navObserver = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio-a.intersectionRatio)[0];
+    if (!visible) return;
+    document.querySelectorAll(".top-nav a").forEach(link => link.classList.toggle("active", link.getAttribute("href") === "#" + visible.target.id));
+  }, { rootMargin: "-20% 0px -65% 0px", threshold: [0, .2, .5] });
+  navSections.forEach(section => navObserver.observe(section));
+}
 $("tajweedToggle").addEventListener("change", async event => {
   state.tajweedEnabled = event.target.checked;
   $("tajweedLegend").hidden = !state.tajweedEnabled;
@@ -600,7 +635,7 @@ function stopPractice(message) {
 async function startPractice() {
   if (!state.selected) { $("practiceStatus").textContent = "اختر سورة أولًا."; return; }
   if (!ASR_API_URL) {
-    $("practiceStatus").textContent = "محرك التسميع غير متاح حاليًا. يمكنك متابعة القراءة والاستماع.";
+    $("practiceStatus").textContent = "محرك التسميع الصوتي لم يُربط بعد. يمكنك استخدام إخفاء الآية والتدرّب عليها، ولن نعرض نتيجة صوتية وهمية.";
     return;
   }
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
