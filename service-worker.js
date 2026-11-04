@@ -1,4 +1,4 @@
-const SHELL_CACHE = "tajweed-shell-v1";
+const SHELL_CACHE = "tajweed-shell-v2";
 const QURAN_CACHE = "tajweed-quran-data-v1";
 const SHELL_FILES = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
