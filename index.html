@@ -12,6 +12,18 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <aside class="side-nav" aria-label="القائمة الجانبية">
+    <a class="side-brand" href="#home"><span class="side-brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
+    <p class="side-caption">القائمة الرئيسية</p>
+    <nav class="side-links">
+      <a class="side-link active" href="#home"><span>⌂</span>الرئيسية</a>
+      <a class="side-link" href="#reader"><span>۞</span>المصحف</a>
+      <a class="side-link" href="#tajweed"><span>◈</span>أحكام التجويد</a>
+      <a class="side-link" href="#recitation"><span>♫</span>الاستماع</a>
+      <a class="side-link" href="#about"><span>ⓘ</span>عن الموقع</a>
+    </nav>
+    <div class="side-note">وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
+  </aside>
   <header class="topbar">
     <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
     <nav class="top-nav" aria-label="التنقل الرئيسي"><a class="active" href="#reader">المصحف</a><a href="#about">عن الموقع</a></nav>
@@ -19,7 +31,7 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" id="home">
       <div class="hero-copy">
         <p class="eyebrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
         <h1>افتح قلبك<br><span>لآيات القرآن</span></h1>
@@ -36,8 +48,8 @@
         <label class="select-wrap"><span class="sr-only">اختر السورة</span><select id="surahSelect"><option value="">اختر السورة</option></select></label>
         <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
       </div>
-      <div class="tajweed-tools"><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
-      <section class="recitation-panel" aria-label="مشغل التلاوة">
+      <div class="tajweed-tools" id="tajweed"><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
+      <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
         <div class="recitation-heading"><div><p class="eyebrow">استمع وتابع الآية</p><h3>التلاوة الصوتية</h3></div><label class="reciter-select"><span>القارئ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option></select></label></div>
         <div class="recitation-controls"><button id="prevAyahAudio" class="audio-action" type="button">السابق</button><button id="playSelectedAyah" class="audio-action primary-audio" type="button">تشغيل الآية</button><button id="nextAyahAudio" class="audio-action" type="button">التالي</button><span id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</span></div>
         <audio id="recitationAudio" controls preload="none"></audio>
