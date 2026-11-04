@@ -404,13 +404,13 @@ try { setTheme(localStorage.getItem("tajweed-theme") === "dark"); } catch { setT
 
 const COLOR_THEMES = new Set(["green", "blue", "red", "yellow"]);
 function setColorTheme(theme) {
-  const selected = COLOR_THEMES.has(theme) ? theme : "green";
+  const selected = COLOR_THEMES.has(theme) ? theme : "blue";
   document.body.dataset.colorTheme = selected;
   $("colorThemeSelect").value = selected;
   try { localStorage.setItem("tajweed-color-theme", selected); } catch {}
 }
-try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "green"); }
-catch { setColorTheme("green"); }
+try { setColorTheme(localStorage.getItem("tajweed-color-theme") || "blue"); }
+catch { setColorTheme("blue"); }
 $("colorThemeSelect").addEventListener("change", event => setColorTheme(event.target.value));
 
 $("themeToggle").addEventListener("click", () => setTheme(!document.body.classList.contains("dark")));
