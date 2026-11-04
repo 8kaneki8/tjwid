@@ -2,89 +2,207 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#244da8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#15243a">
   <meta name="color-scheme" content="light dark">
+  <meta name="description" content="تجويد — مساحة هادئة لقراءة القرآن الكريم، والاستماع إلى التلاوات، ومتابعة الحفظ والتجويد.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <meta name="description" content="تجويد — مصحف رقمي للقراءة صفحة بصفحة، والاستماع إلى التلاوات، والتدرب على الحفظ والتجويد.">
-  <title>تجويد — رفيق رحلتك مع القرآن</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="redesign.css">
+  <title>تجويد — مساحة للقراءة والتدبّر</title>
 </head>
 <body>
-  <a class="skip-link" href="#reader">تخطَّ إلى المصحف</a>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="تجويد - الرئيسية"><span class="brand-mark">ت</span><span>تجويد<small>رفيق تلاوتك</small></span></a>
-    <nav class="top-nav" aria-label="التنقل الرئيسي"><a href="#home">الرئيسية</a><a class="active" href="#reader">المصحف</a><a href="#tajweedTools">التجويد</a><a href="#recitation">الاستماع</a><a href="#practice">الحفظ والتدريب</a></nav>
-    <div class="appearance-controls"><label class="color-theme-control"><span class="sr-only">لون الموقع</span><select id="colorThemeSelect" aria-label="اختيار لون الموقع"><option value="green">أخضر</option><option value="blue" selected>أزرق</option><option value="red">أحمر</option><option value="yellow">أصفر</option></select></label><button class="icon-button" id="themeToggle" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button></div>
-  </header>
-
-  <main>
-    <section class="welcome-hero" id="home" aria-labelledby="welcomeTitle">
-      <div class="hero-copy"><span class="hero-kicker"><span class="hero-kicker-dot"></span> مَسَاحَةٌ لِصُحْبَةِ القُرْآن</span><h1 id="welcomeTitle">اجعل للقرآن <em>موعدًا</em> في يومك</h1><p>اقرأ على مهل، واستمع بقلب حاضر، وواصل من حيث توقفت.</p><div class="hero-actions"><a class="hero-primary" href="#reader">ابدأ القراءة <span aria-hidden="true">←</span></a><a class="hero-secondary" id="continueReading" href="#reader" hidden>تابع من حيث توقفت</a><a class="hero-secondary" href="#recitation">استمع للتلاوة</a></div></div>
-      <div class="hero-art" aria-hidden="true"><div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div><div class="hero-book"><span>۞</span><strong>الْقُرْآنُ الْكَرِيم</strong><small>نُورٌ وَهُدًى</small></div></div>
-      <div class="hero-facts"><div><strong>١١٤</strong><span>سورة</span></div><i></i><div><strong>٦٠٤</strong><span>صفحة</span></div><i></i><div><strong>٣٠</strong><span>جزءًا</span></div></div>
-    </section>
-    <section class="progress-panel" aria-labelledby="progressTitle">
-      <div class="progress-heading"><div><p class="eyebrow">خطوة ثابتة كل يوم</p><h2 id="progressTitle">رحلتك مع القرآن</h2></div><span>يُحفظ تقدمك على هذا الجهاز فقط</span></div>
-      <div class="progress-grid">
-        <div class="progress-stat"><span>صفحات فتحتها اليوم</span><strong id="todayPages">0</strong></div>
-        <div class="progress-stat"><span>صفحات زرتها</span><strong id="visitedPages">0</strong><small>من 604 صفحة</small></div>
-        <div class="progress-stat"><span>أيام متتابعة</span><strong id="readingStreak">0</strong><small>استمر ولو بصفحة يوميًا</small></div>
-        <div class="goal-stat"><label for="dailyGoal">هدفك اليومي <input id="dailyGoal" type="number" min="1" max="20" value="3"> صفحة</label><progress id="dailyProgress" max="3" value="0"></progress><small id="dailyGoalText">ابدأ بقراءة صفحة لتحقيق هدفك</small></div>
+  <a class="skip-link" href="#reader">انتقل مباشرة إلى المصحف</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="القائمة الرئيسية">
+      <a class="brand" href="#home" aria-label="تجويد، الصفحة الرئيسية">
+        <span class="brand-symbol" aria-hidden="true"><span>۞</span></span>
+        <span class="brand-copy">تجويد<small>رفيق رحلتك مع القرآن</small></span>
+      </a>
+      <div class="sidebar-caption">مساحتك</div>
+      <nav class="top-nav" aria-label="التنقل الرئيسي">
+        <a href="#home" class="active"><span class="nav-icon" aria-hidden="true">⌂</span><span>الرئيسية</span></a>
+        <a href="#reader"><span class="nav-icon" aria-hidden="true">▤</span><span>المصحف</span></a>
+        <a href="#tajweedTools"><span class="nav-icon" aria-hidden="true">۞</span><span>أحكام التجويد</span></a>
+        <a href="#recitation"><span class="nav-icon" aria-hidden="true">♫</span><span>الاستماع</span></a>
+        <a href="#practice"><span class="nav-icon" aria-hidden="true">◉</span><span>الحفظ والتدريب</span></a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-note">
+        <span class="sidebar-note-icon" aria-hidden="true">✦</span>
+        <p>خيرُ جليسٍ في الزمانِ كتابُ</p>
+        <small>اجعل لك وردًا، ولو قليلًا</small>
       </div>
-    </section>
-    <section class="reader-section" id="reader">
-      <div class="section-heading"><div><p class="eyebrow">المصحف الشريف</p><h2>اقرأ صفحةً صفحة</h2></div><span class="riwaya">رواية حفص عن عاصم · ١١٤ سورة</span></div>
-      <div class="reader-tools">
-        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن اسم السورة أو رقمها…" autocomplete="off"></label>
-        <label class="select-wrap"><span class="sr-only">اختر السورة</span><select id="surahSelect"><option value="">اختر السورة</option></select></label>
-        <label class="select-wrap"><span class="sr-only">اختيار رسم المصحف</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">الرسم العثماني</option><option value="simple">الرسم المبسط</option></select></label>
-      </div>
-      <div class="tajweed-tools" id="tajweedTools"><div class="tool-section-heading"><strong>أدوات التجويد</strong><span>تعلّم الأحكام أثناء القراءة</span></div><label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>عرض المصحف الملوّن بأحكام التجويد</span></label><div id="tajweedLegend" class="tajweed-legend" hidden><span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span></div><p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p></div>
+      <div class="sidebar-foot"><span class="online-dot"></span> تُحفظ قراءتك على جهازك</div>
+    </aside>
 
-      <div class="reader-layout">
-        <aside class="surah-panel"><div class="panel-title"><h3>السور</h3><span id="surahCount">—</span></div><div id="surahList" class="surah-list" aria-label="قائمة السور" aria-live="polite" aria-relevant="additions text"><p class="muted">جارٍ تجهيز فهرس السور…</p></div></aside>
-        <article class="mushaf-panel" id="mushafPanel" aria-live="polite">
-          <div class="mushaf-top"><span class="page-label" id="currentLocation">صفحة ١</span><span class="mushaf-edition" id="mushafEdition">مصحف المدينة · رواية حفص</span><div class="reader-quick-tools"><button id="fontDecrease" type="button" aria-label="تصغير خط القرآن">A−</button><button id="fontIncrease" type="button" aria-label="تكبير خط القرآن">A+</button><button id="fullscreenReader" type="button" aria-label="ملء الشاشة">⛶</button></div><button class="bookmark" id="bookmarkState" type="button">＋ حفظ علامة</button><label class="bookmark-select"><span class="sr-only">المواضع المحفوظة</span><select id="bookmarksSelect" aria-label="الانتقال إلى موضع محفوظ"><option value="">المواضع المحفوظة</option></select></label><button id="deleteBookmark" class="bookmark-delete" type="button" disabled>حذف العلامة</button></div>
-          <div id="readingContent" class="reading-content">
-            <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
+    <div class="app-main">
+      <header class="topbar">
+        <div class="topbar-heading">
+          <span class="topbar-kicker">مساحة القراءة</span>
+          <strong>السلام عليك، أهلًا بعودتك</strong>
+        </div>
+        <div class="topbar-actions">
+          <label class="color-theme-control">
+            <span class="sr-only">لون الواجهة</span>
+            <select id="colorThemeSelect" aria-label="اختيار لون الواجهة">
+              <option value="blue" selected>أزرق</option><option value="green">أخضر</option><option value="red">أحمر</option><option value="yellow">ذهبي</option>
+            </select>
+          </label>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="تبديل المظهر" title="تبديل المظهر">◐</button>
+        </div>
+      </header>
+
+      <main id="mainContent">
+        <section class="welcome-hero" id="home" aria-labelledby="welcomeTitle">
+          <div class="hero-content">
+            <span class="hero-kicker"><i></i> وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</span>
+            <h1 id="welcomeTitle">قليلٌ دائم، <em>خيرٌ من كثيرٍ منقطع</em></h1>
+            <p>افتح مصحفك، وابدأ من حيث وصلت. مساحة هادئة تجمع القراءة والاستماع ومتابعة رحلتك.</p>
+            <div class="hero-actions">
+              <a class="hero-primary" href="#reader"><span>ابدأ القراءة</span><b aria-hidden="true">←</b></a>
+              <a class="hero-secondary" id="continueReading" href="#reader" hidden>تابع من حيث توقفت</a>
+            </div>
           </div>
-          <div class="reader-footer"><button id="prevSurah" class="secondary-button" disabled>‹ الصفحة السابقة</button><label class="page-jump">اذهب إلى <input id="pageJump" type="number" min="1" max="604" value="1" inputmode="numeric" aria-label="رقم الصفحة"> <span>من ٦٠٤</span></label><button id="goToPage" class="secondary-button">انتقال</button><span id="readerStatus">جارٍ تجهيز المصحف</span><button id="nextSurah" class="secondary-button" disabled>الصفحة التالية ›</button></div>
-        </article>
-      </div>
-    </section>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-halo halo-one"></div><div class="art-halo halo-two"></div>
+            <div class="ornament">۞</div>
+            <div class="book-art"><span class="book-cover-mark">۞</span><span class="book-title">الْقُرْآنُ الْكَرِيم</span><span class="book-subtitle">مصحف المدينة</span></div>
+            <div class="art-caption">نُورٌ لِلْقُلُوب</div>
+          </div>
+          <div class="hero-meta"><span><b>١١٤</b> سورة</span><i></i><span><b>٦٠٤</b> صفحة</span><i></i><span><b>٣٠</b> جزءًا</span></div>
+        </section>
 
-    <section class="learning-section" aria-label="أدوات الاستماع والتدريب">
-      <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
-        <div class="recitation-heading"><div><p class="eyebrow">استمع وتابع الآية</p><h3>استمع إلى القرآن</h3></div><label class="reciter-select"><span>اختر الشيخ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option><option value="Maher_AlMuaiqly_128kbps">ماهر المعيقلي</option></select></label><button id="toggleRecitationPanel" class="audio-action panel-toggle" type="button" aria-expanded="true" aria-controls="recitationBody">إخفاء المشغل −</button></div>
-        <div id="recitationBody" class="recitation-body">
-        <div class="recitation-controls"><label class="repeat-select"><span>تكرار الآية</span><select id="repeatSelect" aria-label="عدد مرات تكرار الآية"><option value="1">مرة واحدة</option><option value="2">مرتين</option><option value="3">3 مرات</option><option value="5">5 مرات</option><option value="10">10 مرات</option><option value="0">باستمرار</option></select></label><button id="playSurahAudio" class="audio-action" type="button">تشغيل السورة كاملة</button><button id="prevAyahAudio" class="audio-action" type="button">السابق</button><button id="playSelectedAyah" class="audio-action primary-audio" type="button">تشغيل الآية</button><button id="nextAyahAudio" class="audio-action" type="button">التالي</button><span id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</span></div>
-        <audio id="recitationAudio" controls preload="none"></audio>
-        <p class="audio-note">اضغط على أي آية في المصحف للاستماع إليها. ينتقل التحديد تلقائيًا مع كل آية. الصوتيات مستضافة عبر <a href="https://everyayah.com/" target="_blank" rel="noopener noreferrer">EveryAyah</a>.</p>
-        </div>
-      </section>
+        <section class="progress-panel" aria-labelledby="progressTitle">
+          <div class="progress-heading">
+            <div><span class="eyebrow">وِرْدُكَ اليومي</span><h2 id="progressTitle">رحلتك مع القرآن</h2></div>
+            <span class="privacy-note"><i></i> تقدمك محفوظ على هذا الجهاز</span>
+          </div>
+          <div class="progress-grid">
+            <div class="progress-stat"><span class="stat-icon">▤</span><div><strong id="todayPages">0</strong><small>صفحات اليوم</small></div></div>
+            <div class="progress-stat"><span class="stat-icon">◫</span><div><strong id="visitedPages">0</strong><small>صفحة زرتها <em>من ٦٠٤</em></small></div></div>
+            <div class="progress-stat"><span class="stat-icon">✦</span><div><strong id="readingStreak">0</strong><small>يومًا متتابعًا</small></div></div>
+            <div class="goal-stat">
+              <div class="goal-top"><label for="dailyGoal">هدف القراءة اليومي</label><span class="goal-number"><input id="dailyGoal" type="number" min="1" max="20" value="3"> صفحة</span></div>
+              <progress id="dailyProgress" max="3" value="0"></progress>
+              <small id="dailyGoalText">ابدأ بقراءة صفحة لتحقيق هدفك</small>
+            </div>
+          </div>
+        </section>
 
-      <section class="practice-panel" id="practice" aria-labelledby="practiceTitle">
-        <div class="practice-heading"><div><p class="eyebrow">تدرّب على التلاوة</p><h3 id="practiceTitle">التسميع الذكي</h3><p>اقرأ الآية بصوتك، وتابع الكلمات التي التقطها التعرّف الصوتي.</p></div><span class="practice-chip">قريبًا</span></div>
-        <div class="practice-options">
-          <label class="practice-check"><input id="hidePracticeAyah" type="checkbox"><span>إخفاء الآية أثناء التسميع</span></label>
-          <label class="practice-check"><input id="practiceBeep" type="checkbox" checked><span>تنبيه صوتي عند اختلاف الكلمة</span></label>
-        </div>
-        <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ التسميع للآية الأولى.</p></div>
-        <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون أثناء القراءة.</p><div class="practice-actions"><button id="startPractice" class="audio-action primary-audio" type="button" disabled>التسميع الصوتي قريبًا</button><button id="stopPractice" class="audio-action" type="button" disabled hidden>إيقاف</button><button id="resetPractice" class="audio-action" type="button">إعادة الآية</button><button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button></div>
-        <p id="practiceStatus" class="practice-status" role="status">ميزة التسميع الصوتي قيد التجهيز. أدوات إخفاء الآية والتدرّب عليها متاحة الآن، ولن نعرض نتيجة صوتية قبل اكتمال المحرك.</p>
-        <p class="practice-disclaimer">ملاحظة: يعتمد التسميع على نموذج مفتوح متخصص في التلاوة ثم مقارنة النص بالآية. قد يخطئ النموذج، ولا تمثل النتيجة حكمًا على صحة التجويد أو المخارج.</p>
-      </section>
-    </section>
+        <section class="reader-section" id="reader" aria-labelledby="readerTitle">
+          <div class="section-heading">
+            <div><span class="eyebrow">المصحف الشريف</span><h2 id="readerTitle">موضعك مع كتاب الله</h2><p>اقرأ على مهل، وتدبّر كل آية.</p></div>
+            <span class="riwaya"><i></i> رواية حفص عن عاصم</span>
+          </div>
 
-    <section class="about-section" id="about"><div class="about-icon">۞</div><div><p class="eyebrow">أمانة النص</p><h2>القرآن يُنقل كما أُنزل</h2><p>نعتمد نصًا موثقًا برواية حفص عن عاصم، ونحافظ عليه دون إعادة صياغة أو تعديل. لن تُفعّل القراءة الكاملة حتى تجتاز بيانات النص اختبارات التحقق.</p><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني: مشروع تنزيل ↗</a></div></section>
-  </main>
-  <footer><span class="footer-brand">تجويد <small>رفيق تلاوتك</small></span><span>اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا</span><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني</a></footer>
+          <div class="reader-tools">
+            <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="ابحث عن سورة..." autocomplete="off" aria-label="ابحث عن سورة"></label>
+            <label class="select-wrap"><span>السورة</span><select id="surahSelect" aria-label="اختر السورة"><option value="">اختر السورة</option></select></label>
+            <label class="select-wrap"><span>الرسم</span><select id="scriptSelect" aria-label="اختيار رسم المصحف"><option value="uthmani">عثماني</option><option value="simple">مبسط</option></select></label>
+          </div>
+
+          <section class="tajweed-tools" id="tajweedTools" aria-label="أدوات التجويد">
+            <div class="tajweed-intro"><span class="tajweed-emblem">۞</span><div><strong>ألوان أحكام التجويد</strong><small>تعرّف على مواضع الأحكام أثناء التلاوة</small></div></div>
+            <label class="tajweed-switch"><input id="tajweedToggle" type="checkbox"><span class="switch-track"></span><span>تفعيل الألوان</span></label>
+            <div id="tajweedLegend" class="tajweed-legend" hidden>
+              <span><i class="legend-dot madd"></i>المد</span><span><i class="legend-dot ghunnah"></i>الغنة والإدغام</span><span><i class="legend-dot ikhfa"></i>الإخفاء</span><span><i class="legend-dot qalqalah"></i>القلقلة</span><span><i class="legend-dot silent"></i>حروف لا تُنطق</span>
+            </div>
+            <p id="tajweedStatus" class="tajweed-status" aria-live="polite">يمكنك تفعيل ألوان أحكام التجويد أثناء القراءة.</p>
+          </section>
+
+          <div class="reader-layout">
+            <aside class="surah-panel" aria-label="فهرس السور">
+              <div class="panel-title"><div><span class="eyebrow">الفهرس</span><h3>سور القرآن</h3></div><span id="surahCount">—</span></div>
+              <div id="surahList" class="surah-list" aria-label="قائمة السور" aria-live="polite" aria-relevant="additions text"><p class="muted">جارٍ تجهيز فهرس السور…</p></div>
+              <div class="surah-panel-foot"><span>مصحف المدينة</span><span>١١٤ سورة</span></div>
+            </aside>
+
+            <article class="mushaf-panel" id="mushafPanel" aria-live="polite">
+              <div class="mushaf-toolbar">
+                <div class="mushaf-location"><span class="location-mark">۞</span><div><strong id="currentLocation">صفحة ١</strong><small id="mushafEdition">مصحف المدينة · رواية حفص</small></div></div>
+                <div class="reader-quick-tools">
+                  <button id="fontDecrease" type="button" aria-label="تصغير خط القرآن" title="تصغير الخط">A−</button>
+                  <button id="fontIncrease" type="button" aria-label="تكبير خط القرآن" title="تكبير الخط">A+</button>
+                  <button id="fullscreenReader" type="button" aria-label="ملء الشاشة" title="ملء الشاشة">⛶</button>
+                </div>
+              </div>
+              <div class="mushaf-actions">
+                <button class="bookmark" id="bookmarkState" type="button">＋ حفظ موضع القراءة</button>
+                <label class="bookmark-select"><span class="sr-only">المواضع المحفوظة</span><select id="bookmarksSelect" aria-label="الانتقال إلى موضع محفوظ"><option value="">العلامات المحفوظة</option></select></label>
+                <button id="deleteBookmark" class="bookmark-delete" type="button" disabled>حذف</button>
+              </div>
+              <div id="readingContent" class="reading-content">
+                <div class="loading-state"><div class="loading-symbol">۞</div><h3>القرآن الكريم</h3><p>يجري تجهيز بيانات المصحف من مصدر موثوق.</p><small>لن نعرض نصًا قرآنيًا قبل التحقق من مصدره وسلامته.</small></div>
+              </div>
+              <div class="reader-footer">
+                <button id="prevSurah" class="secondary-button" type="button" disabled><span>→</span> السابقة</button>
+                <label class="page-jump">الانتقال إلى <input id="pageJump" type="number" min="1" max="604" value="1" inputmode="numeric" aria-label="رقم الصفحة"> <span>/ ٦٠٤</span></label>
+                <button id="goToPage" class="jump-button" type="button">اذهب</button>
+                <span id="readerStatus" role="status">جارٍ تجهيز المصحف</span>
+                <button id="nextSurah" class="secondary-button" type="button" disabled>التالية <span>←</span></button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="learning-section" aria-label="الاستماع والتدريب">
+          <section class="recitation-panel" id="recitation" aria-label="مشغل التلاوة">
+            <div class="learning-heading">
+              <span class="learning-icon audio-icon">♫</span>
+              <div><span class="eyebrow">استمع وأنصت</span><h3>مجلس التلاوة</h3><p>استمع إلى الآيات وتابع موضع القراءة.</p></div>
+              <button id="toggleRecitationPanel" class="panel-toggle" type="button" aria-expanded="true" aria-controls="recitationBody">طيّ المشغل −</button>
+            </div>
+            <div id="recitationBody" class="recitation-body">
+              <label class="reciter-select"><span>القارئ</span><select id="reciterSelect" aria-label="اختيار الشيخ"><option value="Minshawy_Murattal_128kbps">محمد صديق المنشاوي</option><option value="Abdul_Basit_Murattal_192kbps">عبد الباسط عبد الصمد</option><option value="Alafasy_128kbps">مشاري العفاسي</option><option value="Husary_128kbps">محمود خليل الحصري</option><option value="Maher_AlMuaiqly_128kbps">ماهر المعيقلي</option></select></label>
+              <div class="recitation-controls">
+                <label class="repeat-select"><span>التكرار</span><select id="repeatSelect" aria-label="عدد مرات تكرار الآية"><option value="1">مرة</option><option value="2">مرتين</option><option value="3">٣ مرات</option><option value="5">٥ مرات</option><option value="10">١٠ مرات</option><option value="0">مستمر</option></select></label>
+                <button id="playSurahAudio" class="audio-action" type="button">السورة كاملة</button>
+                <button id="prevAyahAudio" class="audio-action" type="button">السابق</button>
+                <button id="playSelectedAyah" class="audio-action primary-audio" type="button">▶ تشغيل الآية</button>
+                <button id="nextAyahAudio" class="audio-action" type="button">التالي</button>
+              </div>
+              <p id="audioAyahStatus" class="audio-status" aria-live="polite">اختر آية أو ابدأ التلاوة من أول السورة.</p>
+              <audio id="recitationAudio" controls preload="none"></audio>
+              <p class="audio-note">يمكنك الضغط على أي آية في المصحف للاستماع إليها. الصوتيات عبر <a href="https://everyayah.com/" target="_blank" rel="noopener noreferrer">EveryAyah</a>.</p>
+            </div>
+          </section>
+
+          <section class="practice-panel" id="practice" aria-labelledby="practiceTitle">
+            <div class="learning-heading">
+              <span class="learning-icon practice-icon">◉</span>
+              <div><span class="eyebrow">ثبّت حفظك</span><h3 id="practiceTitle">مساحة المراجعة</h3><p>درّب ذاكرتك آيةً بعد آية.</p></div>
+              <span class="coming-soon">التسميع الصوتي قيد التجهيز</span>
+            </div>
+            <div class="practice-options">
+              <label class="practice-check"><input id="hidePracticeAyah" type="checkbox"><span>إخفاء كلمات الآية</span></label>
+              <label class="practice-check"><input id="practiceBeep" type="checkbox" checked><span>تنبيه صوتي عند الاختلاف</span></label>
+            </div>
+            <div class="practice-target" id="practiceTarget" aria-live="polite"><p>اختر سورة، ثم ابدأ مراجعة الآية الأولى.</p></div>
+            <p id="practiceLiveTranscript" class="practice-live" aria-live="polite">سيظهر هنا ما يلتقطه الميكروفون عند توفر محرك التسميع.</p>
+            <div class="practice-actions">
+              <button id="startPractice" class="audio-action primary-audio" type="button" disabled>التسميع الصوتي قريبًا</button>
+              <button id="stopPractice" class="audio-action" type="button" disabled hidden>إيقاف</button>
+              <button id="resetPractice" class="audio-action" type="button">إعادة الآية</button>
+              <button id="nextPracticeAyah" class="audio-action" type="button">الآية التالية</button>
+            </div>
+            <p id="practiceStatus" class="practice-status" role="status">ميزة التسميع الصوتي قيد التجهيز. أدوات إخفاء الآية والمراجعة متاحة الآن.</p>
+            <small class="practice-disclaimer">قد يخطئ التعرّف الصوتي؛ ولا تمثل نتائجه حكمًا على صحة التجويد أو المخارج.</small>
+          </section>
+        </section>
+
+        <section class="about-section" id="about">
+          <span class="about-emblem">۞</span>
+          <div><span class="eyebrow">أمانة النص</span><h2>النص القرآني أمانة</h2><p>نعرض النص برواية حفص عن عاصم، ونحافظ عليه دون إعادة صياغة أو تعديل. لن نعرض نصًا غير مكتمل أو غير متحقق منه.</p><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">التعرّف على مصدر النص القرآني <span>↗</span></a></div>
+        </section>
+      </main>
+
+      <footer><span class="footer-brand">تجويد <small>رفيق رحلتك مع القرآن</small></span><span>اللهم اجعل القرآن ربيع قلوبنا ونور صدورنا</span><a href="https://tanzil.net" target="_blank" rel="noopener noreferrer">مصدر النص القرآني</a></footer>
+    </div>
+  </div>
   <script src="app.js" defer></script>
 </body>
 </html>
